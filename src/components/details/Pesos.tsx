@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Paper, Typography, Grid, IconButton, Button, Box } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import PesosModal from './PesosModal';
 
 interface PesoEntry {
   id: number;
@@ -14,6 +15,9 @@ const Pesos = () => {
     { id: 1, fecha: '2025-04-01', peso: 4.5 },
     { id: 2, fecha: '2025-04-08', peso: 4.7 },
   ]);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentEntry, setCurrentEntry] = useState<PesoEntry | null>(null);
 
   const handleEdit = (id: number) => {
     console.log(`Edit test with ID: ${id}`);
@@ -63,6 +67,7 @@ const Pesos = () => {
           Nuevo Peso
         </Button>
       </Box>
+      
     </Paper>
   );
 };

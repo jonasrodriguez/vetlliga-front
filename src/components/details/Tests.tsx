@@ -22,21 +22,19 @@ const Tests = () => {
   const [currentTest, setCurrentTest] = useState<TestEntry | null>(null);
 
   const handleAdd = () => {
-    setCurrentTest(null); // Clear current test for adding
+    setCurrentTest(null);
     setModalOpen(true);
   };
 
   const handleEdit = (test: TestEntry) => {
-    setCurrentTest(test); // Set the test to edit
+    setCurrentTest(test);
     setModalOpen(true);
   };
 
   const handleSave = (test: TestEntry) => {
     if (test.id) {
-      // Edit existing test
       setTests((prev) => prev.map((t) => (t.id === test.id ? test : t)));
     } else {
-      // Add new test
       setTests((prev) => [...prev, { ...test, id: prev.length + 1 }]);
     }
   };

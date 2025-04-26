@@ -35,13 +35,17 @@ export interface AnimalDto {
   nombre: string;
   chip: string;
   fechaNacimiento: string;
+  edad: string;
   fechaEntrada: string;
   sexo: string;
+  sexoDescripcion: string;
   raza: string;
   origen: string;
+  enfermedadesCronicas: string;
   localizacion: number;
   fechaLocalizacion: string;
   estado: number;
+  estadoDescripcion: string;
   fechaEstado: string;
   desparasitaciones: DesparasitacionDto[];
   historial: HistorialDto[];
