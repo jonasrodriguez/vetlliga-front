@@ -1,24 +1,11 @@
-import { useState } from 'react';
-import { List, Typography, ListItemButton, Paper, Collapse, Divider } from '@mui/material';
+import { List, Typography, ListItemButton, Paper, Divider } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
 type SidebarProps = {
   drawerWidth: number;
 };
 
 function Sidebar({ drawerWidth }: SidebarProps) {
-  const [openPerros, setOpenPerros] = useState(false);
-  const [openGatos, setOpenGatos] = useState(false);
-
-  const handleTogglePerros = () => {
-    setOpenPerros((prev) => !prev);
-  };
-
-  const handleToggleGatos = () => {
-    setOpenGatos((prev) => !prev);
-  };
-
   return (
     <Paper
       elevation={3}
@@ -33,130 +20,58 @@ function Sidebar({ drawerWidth }: SidebarProps) {
         Menú
       </Typography>
       <Divider sx={{ marginBottom: '8px' }} />
-      <List dense>
-
-        {/* Perros with Submenu */}
-        <ListItemButton
-          component={RouterLink}
-          to="/perros"
-          onClick={handleTogglePerros}          
-        >
-          <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+      <List>
+        {/* Perros Section */}
+        <ListItemButton component={RouterLink} to="/perros">
+          <Typography variant="body1" sx={{ fontWeight: 'bold', paddingLeft: '8px' }}>
             Perros
           </Typography>
-          {openPerros ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-        <Collapse in={openPerros} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton
-              component={RouterLink}
-              to="/perros/en-protectora"
-              sx={{ pl: 4 }}
-            >
-              <Typography variant="body2">
-                En Protectora
-              </Typography>
-            </ListItemButton>
-            <ListItemButton
-              component={RouterLink}
-              to="/perros/en-acogida"
-              sx={{ pl: 4 }}
-            >
-              <Typography variant="body2">
-                En Acogida
-              </Typography>
-            </ListItemButton> 
-            <ListItemButton
-              component={RouterLink}
-              to="/perros/reservados"
-              sx={{ pl: 4 }}
-            >
-              <Typography variant="body2">
-                Reservados
-              </Typography>
-            </ListItemButton>                       
-            <ListItemButton
-              component={RouterLink}
-              to="/perros/adoptados"
-              sx={{ pl: 4 }}
-            >
-              <Typography variant="body2">
-                Adoptados
-              </Typography>
-            </ListItemButton>
-            <ListItemButton
-              component={RouterLink}
-              to="/perros/fallecidos"
-              sx={{ pl: 4 }}
-            >
-              <Typography variant="body2">
-                Fallecidos
-              </Typography>
-            </ListItemButton>
-          </List>
-        </Collapse>
+        <ListItemButton component={RouterLink} to="/perros/en-protectora" sx={{ pl: 4 }}>
+          <Typography variant="body2">En Protectora</Typography>
+        </ListItemButton>
+        <ListItemButton component={RouterLink} to="/perros/en-acogida" sx={{ pl: 4 }}>
+          <Typography variant="body2">En Acogida</Typography>
+        </ListItemButton>
+        <ListItemButton component={RouterLink} to="/perros/reservados" sx={{ pl: 4 }}>
+          <Typography variant="body2">Reservados</Typography>
+        </ListItemButton>
+        <ListItemButton component={RouterLink} to="/perros/adoptados" sx={{ pl: 4 }}>
+          <Typography variant="body2">Adoptados</Typography>
+        </ListItemButton>
+        <ListItemButton component={RouterLink} to="/perros/fallecidos" sx={{ pl: 4 }}>
+          <Typography variant="body2">Fallecidos</Typography>
+        </ListItemButton>
 
-        {/* Gatos with Submenu */}
-        <ListItemButton
-          component={RouterLink}
-          to="/gatos"
-          onClick={handleToggleGatos}
-        >
-          <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+        {/* Gatos Section */}
+        <ListItemButton component={RouterLink} to="/gatos">
+          <Typography variant="body1" sx={{ fontWeight: 'bold', paddingLeft: '8px', marginTop: '16px' }}>
             Gatos
           </Typography>
-          {openGatos ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-        <Collapse in={openGatos} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton
-              component={RouterLink}
-              to="/gatos/en-protectora"
-              sx={{ pl: 4 }}
-            >
-              <Typography variant="body2">
-                En Protectora
-              </Typography>
-            </ListItemButton>
-            <ListItemButton
-              component={RouterLink}
-              to="/gatos/en-acogida"
-              sx={{ pl: 4 }}
-            >
-              <Typography variant="body2">
-                En Acogida
-              </Typography>
-            </ListItemButton>    
-            <ListItemButton
-              component={RouterLink}
-              to="/gatos/reservados"
-              sx={{ pl: 4 }}
-            >
-              <Typography variant="body2">
-                Reservados
-              </Typography>
-            </ListItemButton>        
-            <ListItemButton
-              component={RouterLink}
-              to="/gatos/adoptados"
-              sx={{ pl: 4 }}
-            >
-              <Typography variant="body2">
-                Adoptados
-              </Typography>
-            </ListItemButton>
-            <ListItemButton
-              component={RouterLink}
-              to="/gatos/fallecidos"
-              sx={{ pl: 4 }}
-            >
-              <Typography variant="body2">
-                Fallecidos
-              </Typography>
-            </ListItemButton>
-          </List>
-        </Collapse>
+        <ListItemButton component={RouterLink} to="/gatos/en-protectora" sx={{ pl: 4 }}>
+          <Typography variant="body2">En Protectora</Typography>
+        </ListItemButton>
+        <ListItemButton component={RouterLink} to="/gatos/en-acogida" sx={{ pl: 4 }}>
+          <Typography variant="body2">En Acogida</Typography>
+        </ListItemButton>
+        <ListItemButton component={RouterLink} to="/gatos/reservados" sx={{ pl: 4 }}>
+          <Typography variant="body2">Reservados</Typography>
+        </ListItemButton>
+        <ListItemButton component={RouterLink} to="/gatos/adoptados" sx={{ pl: 4 }}>
+          <Typography variant="body2">Adoptados</Typography>
+        </ListItemButton>
+        <ListItemButton component={RouterLink} to="/gatos/fallecidos" sx={{ pl: 4 }}>
+          <Typography variant="body2">Fallecidos</Typography>
+        </ListItemButton>
       </List>
+      <Divider sx={{ marginBottom: '8px' }} />
+      {/* Recordatorios Section */}
+      <ListItemButton component={RouterLink} to="/recordatorios" sx={{ pl: 2 }}>
+        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+          Recordatorios
+        </Typography>
+      </ListItemButton>
     </Paper>
   );
 }

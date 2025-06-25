@@ -1,37 +1,65 @@
 import React from 'react';
-import { Table, TableBody, TableContainer, Paper, TableRow, TableCell } from '@mui/material';
+import { Table, TableBody, TableContainer, Paper, TableRow, TableCell, IconButton, Tooltip  } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import SummarizeIcon from '@mui/icons-material/Summarize';
+
 import { AnimalDto } from '../../models/AnimalDto';
 import AnimalTableHeaders from './AnimalTableHeaders';
 import EstadoChip from '../shared/EstadoChip';
 
+import calculoEdad from '../../utils/calculoEdad';
+import { sexoLiterales } from '../../enums/SexoAnimal';
+
 interface AnimalListTableProps {
   animals: AnimalDto[];
-  sortField: keyof AnimalDto | null;
-  sortDirection: 'asc' | 'desc';
-  hideEstadoColumn?: boolean;
-  onSort: (field: keyof AnimalDto) => void;
 }
 
-const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals, sortField, sortDirection, onSort, hideEstadoColumn = false, }) => {
+const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals }) => {
+
+  const navigate = useNavigate();
+
+  const handleRowClick = (id: number) => {
+    navigate(`/ficha/${id}`);
+  };
+
+    const handleHistorialClick = (id: number) => {
+    navigate(`/ficha/${id}?historial=true`);
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table>
-        <AnimalTableHeaders sortField={sortField} sortDirection={sortDirection} onSort={onSort} hideEstadoColumn={hideEstadoColumn} />
+        <AnimalTableHeaders/>
         <TableBody>
           {animals.map((animal) => (
-            <TableRow key={animal.id}>
+            <TableRow key={animal.id} onClick={() => handleRowClick(animal.id)}
+              sx={{
+                cursor: 'pointer',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)', // Slightly darker background on hover
+                },
+              }}
+            >
               <TableCell>{animal.nombre}</TableCell>
-              {!hideEstadoColumn && (
-                <TableCell>
-                  <EstadoChip estado={animal.estado} />
-                </TableCell>
-              )}
+              <TableCell>
+                <EstadoChip estado={animal.estado} />
+              </TableCell>              
               <TableCell>{animal.numeroRegistro}</TableCell>
-              <TableCell>{animal.sexoDescripcion}</TableCell>
+              <TableCell>{sexoLiterales(animal.sexo)}</TableCell>
               <TableCell>{animal.chip}</TableCell>
-              <TableCell>{animal.edad}</TableCell>
+              <TableCell>{calculoEdad(animal.fechaNacimiento)}</TableCell>         
+              <TableCell>{animal.ultimoPeso ? `${animal.ultimoPeso} kg` : '-'}</TableCell>
               <TableCell>{animal.fechaEntrada}</TableCell>
               <TableCell>{animal.enfermedadesCronicas}</TableCell>
+              
+              {/* Boton historial */}
+              <TableCell  onClick={(e) => e.stopPropagation()} >
+                <Tooltip title="Mostrar historial">
+                  <IconButton onClick={() => handleHistorialClick(animal.id)}>
+                    <SummarizeIcon color="primary" />
+                  </IconButton>
+                </Tooltip>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -1,51 +1,58 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Paper, Typography, Grid, IconButton, Box, Button } from '@mui/material';
-import TestsModal from './TestsModal';
+import TestsModal from './modals/TestsModal';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import { AnimalDto, TestDto } from '../../models/AnimalDto';
+import * as TestService from '../../services/TestsService';
+import useAnimalStore from '../../stores/AnimalStore';
+import formatDate from '../../utils/formatDate';
 
-interface TestEntry {
-  id: number;
-  fecha: string;
-  tipo: string;
-  resultado: string;
-  lote: string;
+interface TestsProps {
+  animal: AnimalDto;
 }
 
-const Tests = () => {
-  const [tests, setTests] = useState<TestEntry[]>([
-    { id: 1, fecha: "2025-04-01", tipo: "Uranotest FeLV-FiV", resultado: "Positivo", lote: "L12345" },
-    { id: 2, fecha: "2025-04-10", tipo: "Test FeLV-FiV", resultado: "Negativo", lote: "L98765" },
-  ]);
+const Tests: React.FC<TestsProps> = ({ animal }) => {
 
+  const [currentEntry, setCurrentEntry] = useState<TestDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentTest, setCurrentTest] = useState<TestEntry | null>(null);
+  const { fetchAnimalById } = useAnimalStore();
 
   const handleAdd = () => {
-    setCurrentTest(null);
+    setCurrentEntry(null);
     setModalOpen(true);
   };
 
-  const handleEdit = (test: TestEntry) => {
-    setCurrentTest(test);
+  const handleEdit = (test: TestDto) => {
+    setCurrentEntry(test);
     setModalOpen(true);
   };
 
-  const handleSave = (test: TestEntry) => {
+  const handleSave = async (test: TestDto) => {
     if (test.id) {
-      setTests((prev) => prev.map((t) => (t.id === test.id ? test : t)));
+      await TestService.updateTest(animal.id, test);
     } else {
-      setTests((prev) => [...prev, { ...test, id: prev.length + 1 }]);
+      await TestService.addTest(animal.id, test);
     }
+    await fetchAnimalById(animal.id, true);
+    setModalOpen(false);
   };
 
-  const handleDelete = (id: number) => {
-    setTests((prev) => prev.filter((test) => test.id !== id));
-  }
+  const handleDelete = async (id: number) => {
+    await TestService.deleteTest(animal.id, id);
+    await fetchAnimalById(animal.id, true);
+    setModalOpen(false);
+  };
 
   return (
     <Paper elevation={3} sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 2, position: 'relative' }}>
-      <Typography variant="h6">Tests</Typography>
+
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'space-between', gap: 2 }}>
+        <Typography variant="h6"> Tests y Pruebas Especificas</Typography>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>        
+          Nuevo Test
+        </Button>
+      </Box>
 
       {/* Grid Headers */}
       <Grid container spacing={2} sx={{ fontWeight: 'bold', borderBottom: '1px solid #ccc', py: 1 }}>
@@ -66,10 +73,10 @@ const Tests = () => {
       </Grid>
 
       {/* Grid Rows */}
-      {tests.map((entry) => (
+      {animal?.tests.map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={3}>
-            <Typography variant="body2">{entry.fecha}</Typography>
+            <Typography variant="body2">{formatDate(entry.fecha)}</Typography>
           </Grid>
           <Grid size={4}>
             <Typography variant="body2">{entry.tipo}</Typography>
@@ -81,37 +88,20 @@ const Tests = () => {
             <Typography variant="body2">{entry.lote}</Typography>
           </Grid>
           <Grid size={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <IconButton onClick={() => handleEdit(entry.id)} size="small">
+            <IconButton onClick={() => handleEdit(entry)} size="small">
               <EditIcon fontSize="small" />
             </IconButton>
           </Grid>
         </Grid>
       ))}      
 
-      {/* Add New Test Button */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          sx={{
-            bgcolor: 'primary.main',
-            color: 'white',
-            borderRadius: 2, // Rounded corners
-            '&:hover': { bgcolor: 'darkgreen' },
-          }}
-          onClick={handleAdd}
-        >
-          Nuevo Test
-        </Button>
-      </Box>
-
       {/* Modal */}
       <TestsModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onSave={handleSave}
-        onDelete={currentTest ? handleDelete : undefined}
-        initialData={currentTest}
+        onDelete={currentEntry ? handleDelete : undefined}
+        initialData={currentEntry}
       />
 
     </Paper>

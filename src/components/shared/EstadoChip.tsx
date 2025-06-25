@@ -1,9 +1,9 @@
 import React from 'react';
 import { Chip } from '@mui/material';
-import { EstadoAnimal, EstadoAnimalDescriptions } from '../../models/EstadoAnimal';
+import { EstadoAnimal, getEstadoAnimalDescripcion } from '../../enums/EstadoAnimal';
 
 interface EstadoChipProps {
-  estado: EstadoAnimal | null;
+  estado: string;
 }
 
 const getEstadoChipColor = (estado: EstadoAnimal | null): 'primary' | 'info' | 'warning' | 'success' | 'error' | 'default' => {
@@ -27,11 +27,12 @@ const EstadoChip: React.FC<EstadoChipProps> = ({ estado }) => {
   if (estado === null) {
     return null; // Don't render anything if estado is null
   }
-
+  const estadoEnum = EstadoAnimal[estado as keyof typeof EstadoAnimal];
+  
   return (
     <Chip
-      label={EstadoAnimalDescriptions[estado]}
-      color={getEstadoChipColor(estado)}
+      label={getEstadoAnimalDescripcion(estadoEnum)}
+      color={getEstadoChipColor(estadoEnum)}
     />
   );
 };

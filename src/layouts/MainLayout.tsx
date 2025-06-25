@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { Box, Container } from '@mui/material';
+import { Box } from '@mui/material';
 
 import Sidebar from '../components/navigation/Sidebar';
 import Header from '../components/navigation/Header';
@@ -11,13 +11,7 @@ const drawerWidth = 240;
 
 const MainLayout: React.FC = () => {
   return (
-    <Box
-      /*sx={{
-        '*': {
-          outline: '1px solid rgba(255, 0, 0, 0.2)' // soft red outlines everywhere
-        }
-      }}*/
-    >
+
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', overflowX: 'hidden' }}>
       <Header headerHeight={headerHeight} />
       <Box sx={{ display: 'flex', flexGrow: 1}}>
@@ -28,14 +22,13 @@ const MainLayout: React.FC = () => {
         </Box>
         
         {/* Main component */}
-        <Container component="main" maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', pt: 4 }}>
+        <Box component="main" sx={{ display: 'flex', flexGrow: 1, flexDirection: 'column', px: 6, pt: 4 }}>
           <Box sx={{ display: 'flex', flexGrow: 1 }}>
             <Outlet />
           </Box>
           <Footer />
-        </Container>  
+        </Box>  
       </Box>
-    </Box>
     </Box>
   );
 };
