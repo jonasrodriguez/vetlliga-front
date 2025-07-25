@@ -9,23 +9,19 @@ services:
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - app-network
     restart: unless-stopped
+
 
   frontend:
     build:
       context: .      
     container_name: nginx
+    networks:
+      - app-network
     expose:
       - "80"
-    restart: unless-stopped
-
-  duckdns:
-    image: linuxserver/duckdns
-    container_name: duckdns
-    environment:
-      - SUBDOMAINS=vetlliga
-      - TOKEN=changeme
-      - TZ=Europe/Madrid
     restart: unless-stopped
 
 networks:
