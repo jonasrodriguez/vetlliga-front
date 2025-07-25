@@ -25,10 +25,14 @@ const DetalleLayout: React.FC<DetalleLayoutProps> = ({ animal, openHistorial }) 
   };
 
   useEffect(() => {
-  if (openHistorial) {
-    setTabIndex(5);
-  }
-}, [openHistorial]);
+    if (openHistorial) {
+      setTabIndex(1);
+    }
+  }, [openHistorial]);
+
+  const onHistorialClose = () => {
+    setTabIndex(0);
+  };
 
   const fichaPesos = {
     label: 'Informacion Personal',
@@ -75,7 +79,7 @@ const DetalleLayout: React.FC<DetalleLayoutProps> = ({ animal, openHistorial }) 
 
   const historial ={
     label: 'Historial',
-    content: <Historial animal={animal} />,
+    content: <Historial animal={animal} onHistorialClose={onHistorialClose} />,
   };
 
   const docus ={
@@ -83,7 +87,7 @@ const DetalleLayout: React.FC<DetalleLayoutProps> = ({ animal, openHistorial }) 
     content: <Documentos animal={animal} />,
   };
 
-  const tabs = [fichaPesos, parasitos, vacunas, inter, tests, historial, docus];
+  const tabs = [fichaPesos, historial, parasitos, vacunas, inter, tests, docus];
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>

@@ -2,16 +2,14 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { AnimalDto } from '../models/AnimalDto';
 import { fetchAnimal, fetchAllAnimals, updateAnimal, createAnimal } from '../services/AnimalService';
-import { AnimalFilterCriteria } from './AnimalFilterStore'; 
+import { AnimalCriteria } from '../models/AnimalCriteria'; 
 
 interface AnimalStore {
   animal: AnimalDto | null;
   animals: AnimalDto[];
-  filters: AnimalFilterCriteria;
   fetchAnimalById: (id: number, force?: boolean) => Promise<void>;
-  fetchAllAnimals: (criteria: Partial<AnimalFilterCriteria>) => Promise<void>;
+  fetchAllAnimals: (criteria: Partial<AnimalCriteria>) => Promise<void>;
   updateAnimal: (id: number, updates: Partial<AnimalDto>) => Promise<void>;
-  setFilters: (newFilters: Partial<AnimalFilterCriteria>) => void; 
 }
 
 const useAnimalStore = create<AnimalStore>()(
@@ -37,7 +35,7 @@ const useAnimalStore = create<AnimalStore>()(
       const fetchedAnimal = await fetchAnimal(id);
       set({ animal: fetchedAnimal });
     },
-    fetchAllAnimals: async (criteria: Partial<AnimalFilterCriteria>) => {
+    fetchAllAnimals: async (criteria: Partial<AnimalCriteria>) => {
       const animals = await fetchAllAnimals(criteria);
       set({ animals });
     },

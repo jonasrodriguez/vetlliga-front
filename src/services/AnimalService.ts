@@ -1,5 +1,5 @@
 import { AnimalDto } from '../models/AnimalDto';
-import { AnimalFilterCriteria } from '../stores/AnimalFilterStore';
+import { AnimalCriteria } from '../models/AnimalCriteria';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL + '/api';
 
@@ -11,7 +11,7 @@ export const fetchAnimal = async (id: number): Promise<AnimalDto> => {
   return response.json();
 };
 
-export const fetchAllAnimals = async (criteria: Partial<AnimalFilterCriteria> = {}): Promise<AnimalDto[]> => {
+export const fetchAllAnimals = async (criteria: Partial<AnimalCriteria> = {}): Promise<AnimalDto[]> => {
 
   const queryParams = new URLSearchParams(
     Object.entries(criteria || {}).reduce((acc, [key, value]) => {

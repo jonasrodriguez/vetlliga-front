@@ -25,11 +25,11 @@ const PesosModal: React.FC<PesoModalProps> = ({
   const isEdit = Boolean(initialData);
 
   const [formData, setFormData] = useState<PesoDto>(
-    initialData || { fecha: new Date().toISOString().split('T')[0], peso: 0 }
+    initialData || { fecha: new Date().toISOString(), peso: 0 }
   );
 
   useEffect(() => {
-    setFormData(initialData || { fecha: new Date().toISOString().split('T')[0], peso: 0 });
+    setFormData(initialData || { fecha: new Date().toISOString(), peso: 0 });
   }, [initialData, open]);
 
   const handleChange = (field: keyof PesoDto) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +42,7 @@ const PesosModal: React.FC<PesoModalProps> = ({
   const handleFechaChange = (date: Date | null) => {
     setFormData((prev) => ({
       ...prev,
-      fecha: date ? date.toISOString().split('T')[0] : '',
+      fecha: date ? date.toISOString() : '',
     }));
   };
 

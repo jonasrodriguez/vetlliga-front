@@ -1,4 +1,3 @@
-import React from 'react';
 import { Typography, Table, TableHead, TableBody, TableRow, TableCell, Paper, Box, Alert } from '@mui/material';
 
 const Dashboard = () => {

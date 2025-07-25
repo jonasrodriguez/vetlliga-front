@@ -27,14 +27,14 @@ const DesparasitacionesModal: React.FC<ModalProps> = ({
   const isEdit = Boolean(initialData);
 
   const [formData, setFormData] = useState<DesparasitacionDto>(initialData || { 
-    fecha: new Date().toISOString().split('T')[0],
+    fecha: new Date().toISOString(),
     tipo: type.toUpperCase(),
     producto: '',
   });
 
   useEffect(() => {
     setFormData(initialData || { 
-      fecha: new Date().toISOString().split('T')[0],
+      fecha: new Date().toISOString(),
       tipo: type.toUpperCase(),
       producto: '',
     });
@@ -50,7 +50,7 @@ const DesparasitacionesModal: React.FC<ModalProps> = ({
   const handleFechaChange = (date: Date | null) => {
     setFormData((prev) => ({
       ...prev,
-      fecha: date ? date.toISOString().split('T')[0] : '',
+      fecha: date ? date.toISOString() : '',
     }));
   };
 

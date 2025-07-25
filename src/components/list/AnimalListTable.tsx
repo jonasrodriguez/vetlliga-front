@@ -10,6 +10,8 @@ import EstadoChip from '../shared/EstadoChip';
 import calculoEdad from '../../utils/calculoEdad';
 import { sexoLiterales } from '../../enums/SexoAnimal';
 
+import formatDate from '../../utils/formatDate';
+
 interface AnimalListTableProps {
   animals: AnimalDto[];
 }
@@ -22,7 +24,7 @@ const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals }) => {
     navigate(`/ficha/${id}`);
   };
 
-    const handleHistorialClick = (id: number) => {
+  const handleHistorialClick = (id: number) => {
     navigate(`/ficha/${id}?historial=true`);
   };
 
@@ -49,8 +51,8 @@ const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals }) => {
               <TableCell>{animal.chip}</TableCell>
               <TableCell>{calculoEdad(animal.fechaNacimiento)}</TableCell>         
               <TableCell>{animal.ultimoPeso ? `${animal.ultimoPeso} kg` : '-'}</TableCell>
-              <TableCell>{animal.fechaEntrada}</TableCell>
-              <TableCell>{animal.enfermedadesCronicas}</TableCell>
+              <TableCell>{formatDate(animal.fechaEntrada)}</TableCell>
+              <TableCell>{animal.enfermedades}</TableCell>
               
               {/* Boton historial */}
               <TableCell  onClick={(e) => e.stopPropagation()} >

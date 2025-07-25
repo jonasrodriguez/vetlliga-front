@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Paper, Box, TextField, Grid, Button } from '@mui/material';
+import { Paper, Box, TextField, Grid, Button, Chip, Typography, InputAdornment, IconButton } from '@mui/material';
 import { Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
@@ -20,15 +20,19 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
   const { updateAnimal } = useAnimalStore();
 
   const [tempAnimal, setTempAnimal] = useState<AnimalDto>({ ...animal });
+  const [enfermedad, setEnfermedad] = useState('');
   const isGato = tempAnimal.tipo === 'GATO';
 
-  const handleFechaEntradaChange = (newDate: Date | null) => {
-    handleChange('fechaEntrada', newDate ? newDate.toISOString().split('T')[0] : '');
+  const enfermedades = tempAnimal.enfermedades.split(';');
+
+  const handleDateChange = (field: keyof AnimalDto) => (newDate: Date | null) => {
+    handleChange(field, newDate ? newDate.toISOString().split('T')[0] : '');
   };
 
-  const handleFechaNacimientoChange = (newDate: Date | null) => {
-    handleChange('fechaNacimiento', newDate ? newDate.toISOString().split('T')[0] : '');
-  };
+  const handleFechaEntradaChange = handleDateChange('fechaEntrada');
+  const handleFechaNacimientoChange = handleDateChange('fechaNacimiento');
+  const handleFechaEstadoChange = handleDateChange('fechaEstado');
+  const handleFechaLocalizacionChange = handleDateChange('fechaLocalizacion');
 
   const handleChange = (key: keyof AnimalDto, value: string | number | null) => {
     setTempAnimal(prev => ({
@@ -39,6 +43,24 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
 
   const handleSave = () => {
     updateAnimal(tempAnimal.id, tempAnimal);
+  };
+
+  const handleDeleteEnfermedad = (index: number) => {
+    const newEnfermedades = [...enfermedades];
+    newEnfermedades.splice(index, 1);
+    handleChange('enfermedades', newEnfermedades.join(';'));
+  };
+
+  const handleAddEnfermedad = () => {
+    const trimmed = enfermedad.trim();
+    if (!trimmed) return;
+
+    const current = tempAnimal.enfermedades || '';
+    const updated =
+      current.length > 0 ? `${current};${trimmed}` : trimmed;
+
+    handleChange('enfermedades', updated);
+    setEnfermedad('');
   };
 
   return (
@@ -126,6 +148,27 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
                 </Select>
               </FormControl>
             </Grid>
+            <Grid size={4}>
+              <DatePicker
+                label="Fecha de estado"
+                value={tempAnimal.fechaEstado ? new Date(tempAnimal.fechaEstado) : null}
+                onChange={handleFechaEstadoChange}
+                sx={{ width: 250,  
+                  color: 'primary.main', 
+                  '& fieldset': { borderColor: 'primary.main' } 
+                }}
+                slotProps={{
+                  textField: {
+                    InputLabelProps: {
+                      sx: {
+                        color: 'primary.main',
+                      },
+                    },
+                  },
+                }}
+              />
+            </Grid>
+            <Grid size={4} />
 
             <Grid size={4}>
               <FormControl sx={{ width: 250 }}>
@@ -147,16 +190,58 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
                 </Select>
               </FormControl>
             </Grid>
+            <Grid size={4}>
+              <DatePicker
+                label="Fecha de localización"
+                value={tempAnimal.fechaLocalizacion ? new Date(tempAnimal.fechaLocalizacion) : null}
+                onChange={handleFechaLocalizacionChange}
+                sx={{ width: 250,  
+                  color: 'success.main', 
+                  '& fieldset': { borderColor: 'success.main' } 
+                }}
+                slotProps={{
+                  textField: {
+                    InputLabelProps: {
+                      sx: {
+                        color: 'success.main',
+                      },
+                    },
+                  },
+                }}
+              />
+            </Grid>
+            <Grid size={4} />            
 
             <Grid size={12}>
-              <TextField
-                label="Enfermedades crónicas"
-                multiline
-                fullWidth
-                rows={2}
-                value={tempAnimal.enfermedadesCronicas}
-                onChange={e => handleChange('enfermedadesCronicas', e.target.value)}
-              />
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 2 }}>
+                <Typography>
+                  Enfermedades cronicas
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+                  {enfermedades
+                    .filter((v) => v && v.trim?.() !== "")
+                    .map((enfermedad, index) => (
+                      <Chip key={index} label={enfermedad} onDelete={() => handleDeleteEnfermedad(index)} />
+                  ))}
+                  <Box sx={{ flexGrow: 1 }} />
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    placeholder="Agregar enfermedad"
+                    value={enfermedad}
+                    onChange={(e) => setEnfermedad(e.target.value)}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton edge="end" onClick={handleAddEnfermedad}>
+                            <SaveIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Box>
+              </Box>            
             </Grid>
 
             <Grid size={12}>

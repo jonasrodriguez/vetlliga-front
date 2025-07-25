@@ -1,12 +1,12 @@
-import React from 'react';
-import { Box, Button, Modal, Typography, TextField, Select, MenuItem, InputLabel, FormControl, Divider } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Button, Modal, Typography, Select, MenuItem, InputLabel, FormControl, Divider } from '@mui/material';
 import { es } from 'date-fns/locale';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { format } from 'date-fns';
 import { AnimalType } from '../../enums/AnimalType';
 import { useAnimalFilterStore } from '../../stores/AnimalFilterStore';
-import { estadoOptions, localizacionPerrosOptions, localizacionGatosOptions } from '../../constants/animalOptions';
+import { AnimalCriteria } from '../../models/AnimalCriteria';
+import { estadoFiltroOptions, localizacionPerrosFiltroOptions, localizacionGatosFiltroOptions } from '../../constants/animalOptions';
 
 interface AnimalListFiltrosModalProps {
   type: AnimalType;
@@ -15,50 +15,183 @@ interface AnimalListFiltrosModalProps {
 }
 
 const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen, type, onClose }) => {
-  const { filters, setFilter, resetFilters } = useAnimalFilterStore();
+  const { filters, setFilters, resetFilters } = useAnimalFilterStore();
+  const [tempFilter, setTempFilter] = useState<AnimalCriteria>({ ...filters });
 
-  const handleDateChange = (key: keyof typeof filters) => (newValue: Date | null) => {
-    setFilter(key, newValue ? format(newValue, 'yyyy-MM') : undefined);
+  const applyFilters = () => {
+    setFilters(tempFilter);
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      setTempFilter({ ...filters });
+    }
+  }, [isOpen, filters]);
+
+  const handleDateChange = (key: keyof typeof filters) => (newDate: Date | null) => {
+    setTempFilter({ ...tempFilter, [key]: newDate ? newDate.toISOString() : '' });
   };
 
-  const estadoSelection = [
+  const renderMenuItems = ( options: { value: string | number | undefined; label: string }[]) => [
     <MenuItem key="-" value={undefined}>-</MenuItem>,
-    <MenuItem key="0" value={0}>En protectora</MenuItem>,
-    <MenuItem key="1" value={1}>En acogida</MenuItem>,
-    <MenuItem key="2" value={2}>Reservado</MenuItem>,
-    <MenuItem key="3" value={3}>Adoptado</MenuItem>,
-    <MenuItem key="4" value={4}>Fallecido</MenuItem>,  
+    ...options.map(opt => (
+      <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
+    )),
   ];
 
-  const localizacionPerros = [
-    <MenuItem key="-" value={undefined}>-</MenuItem>,
-    <MenuItem key="1" value={1}>Nivel 1</MenuItem>,
-    <MenuItem key="2" value={2}>Nivel 2/3</MenuItem>,
-  ];
+  const estadoFiltro = (
+    <Box sx={{ display: 'flex', gap: 2 }}>
+      <FormControl fullWidth>
+        <InputLabel>Estado</InputLabel>
+        <Select
+          label="Estado"
+          sx={{ width: 250 }}
+          value={tempFilter.estado !== undefined ? tempFilter.estado : ''}
+          onChange={(e) => setTempFilter({ ...tempFilter, estado: e.target.value ? Number(e.target.value) : undefined})}
+        >
+          {renderMenuItems(estadoFiltroOptions)}
+        </Select>
+      </FormControl>
 
-  const localizacionGatos = [
-    <MenuItem key="-" value={undefined}>-</MenuItem>,
-    <MenuItem key="0" value={0}>Hospitalización</MenuItem>,
-    <MenuItem key="1" value={1}>Hospitalización Consulta</MenuItem>,
-    <MenuItem key="2" value={2}>Cuarentena Entrada</MenuItem>,
-    <MenuItem key="3" value={3}>Cuarentena Salida</MenuItem>,
-    <MenuItem key="4" value={4}>Adaptación</MenuItem>,
-    <MenuItem key="5" value={5}>Chiquipark</MenuItem>,
-    <MenuItem key="6" value={6}>Patio Verde</MenuItem>,
-    <MenuItem key="7" value={7}>Zona Leucemia</MenuItem>,
-    <MenuItem key="8" value={8}>Antigua Adaptación</MenuItem>,
-    <MenuItem key="9" value={9}>Colonia</MenuItem>,
-    <MenuItem key="10" value={10}>Colonia Externa</MenuItem>,
-    <MenuItem key="11" value={11}>Propietario</MenuItem>,
-  ];
+      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+        <DatePicker
+          views={['month', 'year']}
+          label="Fecha Estado"
+          sx={{ minWidth: 250 }}
+          value={tempFilter.fechaEstado ? new Date(tempFilter.fechaEstado) : null}
+          onChange={handleDateChange('fechaEstado')}
+          minDate={new Date(2010, 0)}
+          maxDate={new Date(new Date().getFullYear(), 11)}
+        />
+      </LocalizationProvider>
+    </Box>
+  );
 
+  const localizacionFiltro = (
+    <Box sx={{ display: 'flex', gap: 2 }}>
+      <FormControl fullWidth>
+        <InputLabel>Localización</InputLabel>
+        <Select
+          label="Localización"
+          sx={{ width: 250 }}
+          value={tempFilter.localizacion ?? ''}
+          onChange={(e) => setTempFilter({ ...tempFilter, localizacion: e.target.value ? Number(e.target.value) : undefined }) }
+        >
+          {type === AnimalType.GATOS
+            ? renderMenuItems(localizacionGatosFiltroOptions)
+            : renderMenuItems(localizacionPerrosFiltroOptions)}
+        </Select>
+      </FormControl>
 
-const renderMenuItems = ( options: { value: string | number | undefined; label: string }[]) => [
-  <MenuItem key="-" value={undefined}>-</MenuItem>,
-  ...options.map(opt => (
-    <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
-  )),
-];
+      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+        <DatePicker
+          views={['month', 'year']}
+          label="Fecha Localización"
+          sx={{ minWidth: 250 }}
+          value={tempFilter.fechaLocalizacion ? new Date(tempFilter.fechaLocalizacion) : null}
+          onChange={handleDateChange('fechaLocalizacion')}
+          minDate={new Date(2010, 0)}
+          maxDate={new Date(new Date().getFullYear(), 11)}
+        />
+      </LocalizationProvider>
+    </Box>    
+  );
+
+  const vacunacionFiltro = (
+    <>
+      <Typography variant="subtitle1" fontWeight="bold">
+        Última vacunación</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+          <DatePicker
+            label="Desde"
+            sx={{ width: 250 }}
+            value={tempFilter.vacunaDesde ? new Date(tempFilter.vacunaDesde) : null}
+            onChange={handleDateChange('vacunaDesde')}
+          />
+          <DatePicker
+            label="Hasta"
+            sx={{ width: 250 }}
+            value={tempFilter.vacunaHasta ? new Date(tempFilter.vacunaHasta) : null}
+            onChange={handleDateChange('vacunaHasta')}
+          />
+        </LocalizationProvider>
+      </Box>    
+    </>
+  );
+
+  const desparasitacionInternaFiltro = (
+    <>
+      <Typography variant="subtitle1" fontWeight="bold">
+        Última desparasitación interna
+      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+          <DatePicker
+            label="Desde"
+            sx={{ width: 250 }}
+            value={tempFilter.desparasitoInternaDesde ? new Date(tempFilter.desparasitoInternaDesde) : null}
+            onChange={handleDateChange('desparasitoInternaDesde')}
+          />
+          <DatePicker
+            label="Hasta"
+            sx={{ width: 250 }}
+            value={tempFilter.desparasitoInternaHasta ? new Date(tempFilter.desparasitoInternaHasta) : null}
+            onChange={handleDateChange('desparasitoInternaHasta')}
+          />
+        </LocalizationProvider>
+      </Box>    
+    </>
+  );
+
+  const desparasitacionExternaFiltro = (
+    <>
+      <Typography variant="subtitle1" fontWeight="bold">
+        Última desparasitación externa
+      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+          <DatePicker
+            label="Desde"
+            sx={{ width: 250 }}
+            value={tempFilter.desparasitoExternaDesde ? new Date(tempFilter.desparasitoExternaDesde) : null}
+            onChange={handleDateChange('desparasitoExternaDesde')}
+          />
+          <DatePicker
+            label="Hasta"
+            sx={{ width: 250 }}
+            value={tempFilter.desparasitoExternaHasta ? new Date(tempFilter.desparasitoExternaHasta) : null}
+            onChange={handleDateChange('desparasitoExternaHasta')}
+          />
+        </LocalizationProvider>
+      </Box>    
+    </>
+  );
+
+  const testFiltro = (
+    <>
+      <Typography variant="subtitle1" fontWeight="bold">
+        Último test
+      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+          <DatePicker
+            label="Desde"
+            sx={{ width: 250 }}
+            value={tempFilter.testDesde ? new Date(tempFilter.testDesde) : null}
+            onChange={handleDateChange('testDesde')}
+          />
+          <DatePicker
+            label="Hasta"
+            sx={{ width: 250 }}
+            value={tempFilter.testHasta ? new Date(tempFilter.testHasta) : null}
+            onChange={handleDateChange('testHasta')}
+          />
+        </LocalizationProvider>
+      </Box>
+    </>
+  );
+
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box
@@ -67,7 +200,7 @@ const renderMenuItems = ( options: { value: string | number | undefined; label: 
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 500,
+          width: 600,
           bgcolor: 'background.paper',
           boxShadow: 24,
           p: 4,
@@ -75,132 +208,22 @@ const renderMenuItems = ( options: { value: string | number | undefined; label: 
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-          <Button variant="contained" color="primary" onClick={onClose}>
+          <Button variant="contained" color="primary" onClick={applyFilters}>
             Aplicar Filtros
           </Button>
-          <Button
-            variant="contained"
-            onClick={resetFilters}
-            sx={{
-              backgroundColor: 'red',
-              '&:hover': { backgroundColor: 'darkred' },
-            }}
-          >
+          <Button  variant="contained" onClick={resetFilters} sx={{ backgroundColor: 'red','&:hover': { backgroundColor: 'darkred' }, } }>
             Resetear Filtros
           </Button>
         </Box>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {/* Estado & Fecha Estado */}
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <FormControl fullWidth>
-              <InputLabel>Estado</InputLabel>
-              <Select
-                label="Estado"
-                value={filters.estado ?? ''}
-                onChange={(e) => setFilter('estado', e.target.value ? e.target.value : undefined) }
-              >
-                {renderMenuItems(estadoOptions)}
-              </Select>
-            </FormControl>
-
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-              <DatePicker
-                views={['month', 'year']}
-                label="Fecha Estado"
-                value={filters.fechaEstado ? new Date(filters.fechaEstado) : null}
-                onChange={handleDateChange('fechaEstado')}
-                minDate={new Date(2010, 0)}
-                maxDate={new Date(new Date().getFullYear(), 11)}
-              />
-            </LocalizationProvider>
-          </Box>
-
-          {/* Localización & Fecha Localización */}
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <FormControl fullWidth>
-              <InputLabel>Localización</InputLabel>
-              <Select
-                label="Localización"
-                value={filters.localizacion ?? ''}
-                onChange={(e) => setFilter('localizacion', e.target.value ? e.target.value : undefined) }
-              >
-                {type === AnimalType.GATOS
-                  ? renderMenuItems(localizacionGatosOptions)
-                  : renderMenuItems(localizacionPerrosOptions)}
-              </Select>
-            </FormControl>
-
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-              <DatePicker
-                views={['month', 'year']}
-                label="Fecha Localización"
-                value={filters.fechaLocalizacion ? new Date(filters.fechaLocalizacion) : null}
-                onChange={handleDateChange('fechaLocalizacion')}
-                minDate={new Date(2010, 0)}
-                maxDate={new Date(new Date().getFullYear(), 11)}
-              />
-            </LocalizationProvider>
-          </Box>
-
+          {estadoFiltro}
+          {localizacionFiltro}
           <Divider />
-
-          {/* Vacunación */}
-          <Typography variant="subtitle1">Última vacunación</Typography>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-              <DatePicker
-                label="Desde"
-                value={filters.ultimaVacunaDesde ? new Date(filters.ultimaVacunaDesde) : null}
-                onChange={(newValue) => setFilter('ultimaVacunaDesde', newValue ? format(newValue, 'yyyy-MM-dd') : undefined)}
-                renderInput={(params) => <TextField {...params} fullWidth />}
-              />
-              <DatePicker
-                label="Hasta"
-                value={filters.ultimaVacunaHasta ? new Date(filters.ultimaVacunaHasta) : null}
-                onChange={(newValue) => setFilter('ultimaVacunaHasta', newValue ? format(newValue, 'yyyy-MM-dd') : undefined)}
-                renderInput={(params) => <TextField {...params} fullWidth />}
-              />
-            </LocalizationProvider>
-          </Box>
-
-          {/* Desparasitación */}
-          <Typography variant="subtitle1">Última desparasitación</Typography>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-              <DatePicker
-                label="Desde"
-                value={filters.ultimaParasitoDesde ? new Date(filters.ultimaParasitoDesde) : null}
-                onChange={(newValue) => setFilter('ultimaParasitoDesde', newValue ? format(newValue, 'yyyy-MM-dd') : undefined)}
-                renderInput={(params) => <TextField {...params} fullWidth />}
-              />
-              <DatePicker
-                label="Hasta"
-                value={filters.ultimaParasitoHasta ? new Date(filters.ultimaParasitoHasta) : null}
-                onChange={(newValue) => setFilter('ultimaParasitoHasta', newValue ? format(newValue, 'yyyy-MM-dd') : undefined)}
-                renderInput={(params) => <TextField {...params} fullWidth />}
-              />
-            </LocalizationProvider>
-          </Box>
-
-          {/* Test */}
-          <Typography variant="subtitle1">Último test</Typography>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-              <DatePicker
-                label="Desde"
-                value={filters.ultimoTestDesde ? new Date(filters.ultimoTestDesde) : null}
-                onChange={(newValue) => setFilter('ultimoTestDesde', newValue ? format(newValue, 'yyyy-MM-dd') : undefined)}
-                renderInput={(params) => <TextField {...params} fullWidth />}
-              />
-              <DatePicker
-                label="Hasta"
-                value={filters.ultimoTestHasta ? new Date(filters.ultimoTestHasta) : null}
-                onChange={(newValue) => setFilter('ultimoTestHasta', newValue ? format(newValue, 'yyyy-MM-dd') : undefined)}
-                renderInput={(params) => <TextField {...params} fullWidth />}
-              />
-            </LocalizationProvider>
-          </Box>
+          {vacunacionFiltro}
+          {desparasitacionInternaFiltro}
+          {desparasitacionExternaFiltro}
+          {testFiltro}
         </Box>
       </Box>
     </Modal>

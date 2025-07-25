@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, Box, Typography, Button, IconButton, Dialog, DialogTitle, DialogActions } from '@mui/material';
+import { Modal, Box, Typography, Button, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+
+import DeleteConfirmation from './DeleteConfirmation';
 
 interface ReusableModalProps {
   open: boolean;
@@ -10,6 +12,8 @@ interface ReusableModalProps {
   onSave?: () => void;
   onDelete?: () => void;
   saveLabel?: string;  
+  width?: number;
+  height?: number;
 }
 
 const ResusableDetailsModal: React.FC<ReusableModalProps> = ({
@@ -20,6 +24,8 @@ const ResusableDetailsModal: React.FC<ReusableModalProps> = ({
   onSave,
   onDelete,
   saveLabel = 'Guardar',
+  width = 400,
+  height
 }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -32,20 +38,6 @@ const ResusableDetailsModal: React.FC<ReusableModalProps> = ({
 
   const handleCancelDelete = () => setConfirmOpen(false);
 
-  const deleteConfirmation = (
-    <Dialog open={confirmOpen} onClose={handleCancelDelete}>
-      <DialogTitle>¿Estás seguro de que deseas eliminar?</DialogTitle>
-      <DialogActions>
-        <Button onClick={handleCancelDelete} color="primary" variant="contained">
-          Cancelar
-        </Button>
-        <Button onClick={handleConfirmDelete} color="error" variant="contained">
-          Eliminar
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-
   return (
     <>
       <Modal open={open} onClose={onClose}>
@@ -55,7 +47,8 @@ const ResusableDetailsModal: React.FC<ReusableModalProps> = ({
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 400,
+            width: width,
+            height: height ? height : 'auto',
             bgcolor: 'background.paper',
             boxShadow: 24,
             p: 4,
@@ -94,7 +87,11 @@ const ResusableDetailsModal: React.FC<ReusableModalProps> = ({
           </Box>
         </Box>
       </Modal>
-      {deleteConfirmation}
+      <DeleteConfirmation
+        confirmOpen={confirmOpen}
+        handleCancelDelete={handleCancelDelete}
+        handleConfirmDelete={handleConfirmDelete}
+      />
     </>
   );
 };

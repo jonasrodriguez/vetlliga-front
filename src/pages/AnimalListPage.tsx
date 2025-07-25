@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Pagination , Stack, Typography } from '@mui/material';
 import { AnimalType } from '../enums/AnimalType';
 import { getEstadoAnimalFromRoute } from '../enums/EstadoAnimal';
 
@@ -15,6 +15,7 @@ import { useAnimalFilterStore } from "../stores/AnimalFilterStore";
 import animalCsv from '../utils/animalCsv';
 
 import { useNavigate } from 'react-router-dom';
+import FiltrosDescripcion from '../components/list/FiltrosDescripcion';
 
 interface ListPageProps {
   type: AnimalType;
@@ -24,7 +25,7 @@ const AnimalListPage: React.FC<ListPageProps> = ({ type }) => {
   const { estado } = useParams<{ estado: string }>();
   const estadoEnum = estado ? getEstadoAnimalFromRoute(estado) : null;
 
-  const { filters, setFilter } = useAnimalFilterStore();
+  const { filters, setFilter, resetFilters } = useAnimalFilterStore();
   const { animals, fetchAllAnimals } = useAnimalStore();
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -34,19 +35,27 @@ const AnimalListPage: React.FC<ListPageProps> = ({ type }) => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await fetchAllAnimals(filters);
-      setLoading(false);
-    };
-    fetchData();
-  }, [filters, fetchAllAnimals]);
+  const tipoAnimal = type === AnimalType.GATOS ? 'Gatos' : 'Perros';
 
   useEffect(() => {
-    setFilter('estado', estadoEnum ? estadoEnum.toString() : undefined);
+    if (type !== filters.tipo) {
+      resetFilters();
+    }
+  }, [filters, type, resetFilters]);
+
+  useEffect(() => {
     setFilter('tipo', type.toString());
+    if (estadoEnum) {
+      setFilter('estado', estadoEnum.toString());
+    }
   }, [estadoEnum, type, setFilter]);
+
+  useEffect(() => {
+    if (!filters.tipo) return;
+    setLoading(true);
+    fetchAllAnimals(filters)
+      .finally(() => setLoading(false));
+  }, [filters, fetchAllAnimals]);
 
   const handleAddClick = () => {
     setModalOpen(true);
@@ -77,13 +86,20 @@ const AnimalListPage: React.FC<ListPageProps> = ({ type }) => {
 
   return (
     <Box sx={{ width: '100%', padding: 2 }}>
+      <Typography variant="h6" gutterBottom>
+        Listado {tipoAnimal} 
+      </Typography>
       <AnimalListControles type={type} onAddClick={handleAddClick} onExcelClick={handleExcelClick} />
+      <FiltrosDescripcion />
       <AnimalListTable animals={animals} />
+      <Stack spacing={2}>
+        <Pagination count={10} />
+      </Stack>
       <AltaAnimalModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onSave={handleAltaAnimal}
-        tipo={type}
+        type={type}
         saving={saving}
         error={error}
       />

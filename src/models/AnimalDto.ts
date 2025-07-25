@@ -6,7 +6,7 @@ export interface DesparasitacionDto {
 }
 
 export const initialDesparasitacion: DesparasitacionDto = {
-  fecha: new Date().toISOString().split('T')[0],
+  fecha: new Date().toISOString(),
   tipo: 'INTERNA',
   producto: '',
 };
@@ -18,7 +18,7 @@ export interface HistorialDto {
 }
 
 export const initialHistorial: HistorialDto = {
-  fecha: new Date().toISOString().split('T')[0],
+  fecha: new Date().toISOString(),
   descripcion: '',
 };
 
@@ -29,7 +29,7 @@ export interface IntervencionDto {
 }
 
 export const initialIntervencion: IntervencionDto = {
-  fecha: new Date().toISOString().split('T')[0],
+  fecha: new Date().toISOString(),
   descripcion: '',
 }
 
@@ -40,7 +40,7 @@ export interface PesoDto {
 }
 
 export const initialPeso: PesoDto = {
-  fecha: new Date().toISOString().split('T')[0],
+  fecha: new Date().toISOString(),
   peso: 0,
 };
 
@@ -53,7 +53,7 @@ export interface TestDto {
 }
 
 export const initialTest: TestDto = {
-  fecha: new Date().toISOString().split('T')[0],
+  fecha: new Date().toISOString(),
   tipo: '',
   resultado: '',
   lote: '',
@@ -67,7 +67,7 @@ export interface VacunacionDto {
 }
 
 export const initialVacunacion: VacunacionDto = {
-  fecha: new Date().toISOString().split('T')[0],
+  fecha: new Date().toISOString(),
   tipo: '',
   producto: '',
 };
@@ -85,7 +85,7 @@ export interface AnimalDto {
   raza: string;
   color: string;
   origen: string;
-  enfermedadesCronicas: string;
+  enfermedades: string;
   antecedentes: string;
   localizacion: string;
   localizacionDescripcion: string;
@@ -120,7 +120,7 @@ export const initialAnimal: AnimalDto = {
   raza: '',
   color: '',
   origen: '',
-  enfermedadesCronicas: '',
+  enfermedades: '',
   antecedentes: '',
   localizacion: '',
   localizacionDescripcion: '',

@@ -8,20 +8,23 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import { AnimalDto, initialAnimal } from '../../models/AnimalDto';
 import { sexoOptions, estadoOptions, localizacionGatosOptions, localizacionPerrosOptions } from '../../constants/animalOptions';
+import ListadoChips from '../shared/ListadoChips';
 
 interface AltaAnimalModalProps {
   open: boolean;
   onClose: () => void;
   onSave: (animal: AnimalDto) => void;
-  tipo: string;
+  type: string;
   saving?: boolean;
   error?: string | null;
 }
 
-const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, onClose, onSave, tipo, saving, error }) => {
+const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, onClose, onSave, type, saving, error }) => {
   const [tempAnimal, setTempAnimal] = useState<AnimalDto>(initialAnimal);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const isGato = tipo === 'GATO';
+  const isGato = type === 'G';
+
+  const enfermedades = tempAnimal.enfermedades.split(';');
 
   useEffect(() => {
     if (open) {
@@ -39,21 +42,14 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, onClose, onSave
     }));
   };
 
-  const handleFechaEntradaChange = (newDate: Date | null) => {
-    handleChange('fechaEntrada', newDate ? newDate.toISOString().split('T')[0] : '');
+  const handleDateChange = (field: keyof AnimalDto) => (newDate: Date | null) => {
+    handleChange(field, newDate ? newDate.toISOString().split('T')[0] : '');
   };
 
-  const handleFechaNacimientoChange = (newDate: Date | null) => {
-    handleChange('fechaNacimiento', newDate ? newDate.toISOString().split('T')[0] : '');
-  };
-
-  const handleFechaEstadoChange = (newDate: Date | null) => {
-    handleChange('fechaEstado', newDate ? newDate.toISOString().split('T')[0] : '');
-  };
-
-  const handleFechaLocalizacionChange = (newDate: Date | null) => {
-    handleChange('fechaLocalizacion', newDate ? newDate.toISOString().split('T')[0] : '');
-  };  
+  const handleFechaEntradaChange = handleDateChange('fechaEntrada');
+  const handleFechaNacimientoChange = handleDateChange('fechaNacimiento');
+  const handleFechaEstadoChange = handleDateChange('fechaEstado');
+  const handleFechaLocalizacionChange = handleDateChange('fechaLocalizacion');
 
   const handleSave = () => {
     if (!tempAnimal.sexo || !tempAnimal.estado || !tempAnimal.localizacion) {
@@ -65,6 +61,23 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, onClose, onSave
   
   const handleClose = () => {
     onClose();
+  };
+
+  const handleDeleteEnfermedad = (index: number) => {
+    const newEnfermedades = [...enfermedades];
+    newEnfermedades.splice(index, 1);
+    handleChange('enfermedades', newEnfermedades.join(';'));
+  };
+
+  const handleAddEnfermedad = (enfermedad: string) => {
+    const trimmed = enfermedad.trim();
+    if (!trimmed) return;
+
+    const current = tempAnimal.enfermedades || '';
+    const updated =
+      current.length > 0 ? `${current};${trimmed}` : trimmed;
+
+    handleChange('enfermedades', updated);
   };
 
   const content = (
@@ -192,13 +205,11 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, onClose, onSave
             <Grid size={4} />
 
             <Grid size={12}>
-              <TextField
-                label="Enfermedades crónicas"
-                multiline
-                fullWidth
-                rows={2}
-                value={tempAnimal.enfermedadesCronicas}
-                onChange={e => handleChange('enfermedadesCronicas', e.target.value)}
+              <ListadoChips
+                title="Enfermedades crónicas"
+                values={enfermedades}
+                handleAddNewValue={handleAddEnfermedad}
+                handleDeleteValue={handleDeleteEnfermedad}
               />
             </Grid>
 

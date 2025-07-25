@@ -6,6 +6,7 @@ type SidebarProps = {
 };
 
 function Sidebar({ drawerWidth }: SidebarProps) {
+
   return (
     <Paper
       elevation={3}

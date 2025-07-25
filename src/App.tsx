@@ -1,35 +1,52 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, CssBaseline, CircularProgress } from '@mui/material';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './styles/theme';
+import { useAuthStore } from './stores/AuthStore';
 
 import { AnimalType } from './enums/AnimalType';
 
 import MainLayout from './layouts/MainLayout';
-import AboutPage from './pages/AboutPage';
+import HomePage from './pages/HomePage';
 import NotFoundPage from './pages/NotFoundPage';
+import AnimalListPage from './pages/AnimalListPage';
+import DetallesAnimal from './pages/DetallesAnimal';
+import LoginPage from './pages/LoginPage';
 
-//const MainLayout = lazy(() => import('./layouts/MainLayout'));
-const DetallesAnimal = lazy(() => import('./pages/DetallesAnimal'));
-const AnimalListPage = lazy(() => import('./pages/AnimalListPage'));
+
+const ProtectedRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
+  const { auth } = useAuthStore();
+  
+  if (!auth.isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
 
 const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <Suspense fallback={<CircularProgress sx={{ display: 'block', margin: 'auto', mt: 4 }} />}>
-          <Routes>
-            <Route path="/" element={<MainLayout />}>
-              <Route index />
-              <Route path="perros/:estado?" element={<AnimalListPage type={AnimalType.PERROS} />} />
-              <Route path="gatos/:estado?" element={<AnimalListPage type={AnimalType.GATOS} />} />
-              <Route path="ficha/:id?" element={<DetallesAnimal />} />
-            </Route>
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Suspense>
-      </Router>
+      <BrowserRouter>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* Protected routes */}
+          <Route path="/" element={
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<HomePage />} />
+            <Route path="perros/:estado?" element={<AnimalListPage type={AnimalType.PERROS} />} />
+            <Route path="gatos/:estado?" element={<AnimalListPage type={AnimalType.GATOS} />} />
+            <Route path="ficha/:id?" element={<DetallesAnimal />} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
     </ThemeProvider>
   );
 };

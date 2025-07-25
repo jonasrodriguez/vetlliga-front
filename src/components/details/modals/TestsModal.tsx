@@ -40,7 +40,7 @@ const TestsModal: React.FC<ModalProps> = ({
   const handleFechaChange = (date: Date | null) => {
     setFormData((prev) => ({
       ...prev,
-      fecha: date ? date.toISOString().split('T')[0] : '',
+      fecha: date ? date.toISOString() : '',
     }));
   };
 

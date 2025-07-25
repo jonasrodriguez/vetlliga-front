@@ -24,16 +24,16 @@ export const estadoOptions = [
 ];
 
 export const estadoFiltroOptions = [
-  { value: 0, label: 'En protectora' },
-  { value: 1, label: 'En acogida' },
-  { value: 2, label: 'Reservado' },
-  { value: 3, label: 'Adoptado' },
-  { value: 4, label: 'Fallecido' },
+  { value: "0", label: 'En protectora' },
+  { value: "1", label: 'En acogida' },
+  { value: "2", label: 'Reservado' },
+  { value: "3", label: 'Adoptado' },
+  { value: "4", label: 'Fallecido' },
 ];
 
 export const localizacionPerrosFiltroOptions = [
-  { value: 1, label: 'Nivel 1' },
-  { value: 2, label: 'Nivel 2/3' },
+  { value: "0", label: 'Nivel 1' },
+  { value: "1", label: 'Nivel 2/3' },
 ];
 
 export const localizacionPerrosOptions = [
@@ -57,16 +57,16 @@ export const localizacionGatosOptions = [
 ];
 
 export const localizacionGatosFiltroOptions = [
-  { value: 0, label: 'Hospitalización' },
-  { value: 1, label: 'Hospitalización Consulta' },
-  { value: 2, label: 'Cuarentena Entrada' },
-  { value: 3, label: 'Cuarentena Salida' },
-  { value: 4, label: 'Adaptación' },
-  { value: 5, label: 'Chiquipark' },
-  { value: 6, label: 'Patio Verde' },
-  { value: 7, label: 'Zona Leucemia' },
-  { value: 8, label: 'Antigua Adaptación' },
-  { value: 9, label: 'Colonia' },
-  { value: 10, label: 'Colonia Externa' },
-  { value: 11, label: 'Propietario' },
+  { value: "0", label: 'Hospitalización' },
+  { value: "1", label: 'Hospitalización Consulta' },
+  { value: "2", label: 'Cuarentena Entrada' },
+  { value: "3", label: 'Cuarentena Salida' },
+  { value: "4", label: 'Adaptación' },
+  { value: "5", label: 'Chiquipark' },
+  { value: "6", label: 'Patio Verde' },
+  { value: "7", label: 'Zona Leucemia' },
+  { value: "8", label: 'Antigua Adaptación' },
+  { value: "9", label: 'Colonia' },
+  { value: "10", label: 'Colonia Externa' },
+  { value: "11", label: 'Propietario' },
 ];
