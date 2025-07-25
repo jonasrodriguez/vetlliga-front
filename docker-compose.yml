@@ -1,0 +1,30 @@
+services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .      
+    container_name: nginx
+    expose:
+      - "80"
+    restart: unless-stopped
+
+  duckdns:
+    image: linuxserver/duckdns
+    container_name: duckdns
+    environment:
+      - SUBDOMAINS=vetlliga
+      - TOKEN=changeme
+      - TZ=Europe/Madrid
+    restart: unless-stopped
+
