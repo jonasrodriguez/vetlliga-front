@@ -28,3 +28,6 @@ services:
       - TZ=Europe/Madrid
     restart: unless-stopped
 
+networks:
+  app-network:
+    external: true
