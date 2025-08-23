@@ -14,6 +14,7 @@ interface ReusableModalProps {
   saveLabel?: string;  
   width?: number;
   height?: number;
+  loading?: boolean;
 }
 
 const ResusableDetailsModal: React.FC<ReusableModalProps> = ({
@@ -25,7 +26,8 @@ const ResusableDetailsModal: React.FC<ReusableModalProps> = ({
   onDelete,
   saveLabel = 'Guardar',
   width = 400,
-  height
+  height,
+  loading = false,
 }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -64,8 +66,8 @@ const ResusableDetailsModal: React.FC<ReusableModalProps> = ({
           {children}
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, gap: 1 }}>
             {onSave && (
-              <Button variant="contained" color="primary" onClick={onSave}>
-                {saveLabel}
+              <Button variant="contained" color="primary" onClick={onSave} disabled={loading}>
+                 {saveLabel}
               </Button>
             )}
             {onDelete && (

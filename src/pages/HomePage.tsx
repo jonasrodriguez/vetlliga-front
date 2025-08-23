@@ -6,11 +6,11 @@ const HomePage: React.FC = () => {
     <Container maxWidth="md">
       <Box textAlign="center" mt={10}>
         <Typography variant="h4" gutterBottom>
-          Benvinguts a la Lliga Protectora d'Animals i Plantes
+          Bienvenidos a Vetlliga
         </Typography>
         <Typography variant="subtitle1" color="textSecondary">
-          Aquesta aplicació és una eina interna per gestionar els animals de la Lliga Protectora d'Animals i Plantes. <br />
-          Feu servir les diferents seccions per consultar, afegir i actualitzar la informació dels animals atesos per l'associació.
+          Esta aplicación es una herramienta interna para gestionar los animales de la Lliga Protectora d'Animals i Plantes. <br />
+          Utiliza las diferentes secciones para consultar, añadir y actualizar la información de los animales atendidos por la asociación.
         </Typography>
       </Box>
     </Container>

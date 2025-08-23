@@ -1,10 +1,11 @@
 import { AnimalDto } from '../models/AnimalDto';
 import { AnimalCriteria } from '../models/AnimalCriteria';
+import { authFetch } from '../utils/fetch';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL + '/api';
 
 export const fetchAnimal = async (id: number): Promise<AnimalDto> => {
-  const response = await fetch(`${API_BASE_URL}/animales/${id}`);
+  const response = await authFetch(`${API_BASE_URL}/animales/${id}`);
   if (!response.ok) {
     throw new Error('Failed to fetch animal');
   }
@@ -22,12 +23,9 @@ export const fetchAllAnimals = async (criteria: Partial<AnimalCriteria> = {}): P
     }, {} as Record<string, string>)
   ).toString();
 
-  const response = await fetch(`${API_BASE_URL}/animales${queryParams ? `?${queryParams}` : ''}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  const response = await authFetch(`${API_BASE_URL}/animales${queryParams ? `?${queryParams}` : ''}`, 
+    { method: 'GET',}
+  );
 
   if (!response.ok) {
     throw new Error('Failed to fetch animals');
@@ -38,11 +36,8 @@ export const fetchAllAnimals = async (criteria: Partial<AnimalCriteria> = {}): P
 };
 
 export const createAnimal = async (newAnimal: Omit<AnimalDto, 'id'>): Promise<AnimalDto> => {
-  const response = await fetch(`${API_BASE_URL}/animales`, {
+  const response = await authFetch(`${API_BASE_URL}/animales`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(newAnimal),
   });
   if (!response.ok) {
@@ -52,11 +47,8 @@ export const createAnimal = async (newAnimal: Omit<AnimalDto, 'id'>): Promise<An
 };
 
 export const updateAnimal = async (id: number, updates: Partial<AnimalDto>): Promise<AnimalDto> => {
-  const response = await fetch(`${API_BASE_URL}/animales/${id}`, {
+  const response = await authFetch(`${API_BASE_URL}/animales/${id}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(updates),
   });
   if (!response.ok) {

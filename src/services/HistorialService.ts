@@ -1,11 +1,11 @@
 import { HistorialDto } from '../models/AnimalDto';
+import { authFetch } from '../utils/fetch';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
 
 export const addHistorial = async (animalId: number, historial: HistorialDto) => {
-  const response = await fetch(`${API_URL}/animales/${animalId}/historial`, {
+  const response = await authFetch(`${API_URL}/animales/${animalId}/historial`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(historial),
   });
   if (!response.ok) throw new Error('Error añadiendo historial');
@@ -13,9 +13,8 @@ export const addHistorial = async (animalId: number, historial: HistorialDto) =>
 };
 
 export const updateHistorial = async (animalId: number, historial: HistorialDto) => {
-  const response = await fetch(`${API_URL}/animales/${animalId}/historial/${historial.id}`, {
+  const response = await authFetch(`${API_URL}/animales/${animalId}/historial/${historial.id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(historial),
   });
   if (!response.ok) throw new Error('Error actualizando historial');
@@ -23,7 +22,7 @@ export const updateHistorial = async (animalId: number, historial: HistorialDto)
 };
 
 export const deleteHistorial = async (animalId: number, historialId: number) => {
-  const response = await fetch(`${API_URL}/animales/${animalId}/historial/${historialId}`, {
+  const response = await authFetch(`${API_URL}/animales/${animalId}/historial/${historialId}`, {
     method: 'DELETE',
   });
   if (!response.ok) throw new Error('Error eliminando historial');

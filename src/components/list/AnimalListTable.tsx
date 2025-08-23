@@ -6,6 +6,7 @@ import SummarizeIcon from '@mui/icons-material/Summarize';
 import { AnimalDto } from '../../models/AnimalDto';
 import AnimalTableHeaders from './AnimalTableHeaders';
 import EstadoChip from '../shared/EstadoChip';
+import LocalizacionChip from '../shared/LocalizacionChip';
 
 import calculoEdad from '../../utils/calculoEdad';
 import { sexoLiterales } from '../../enums/SexoAnimal';
@@ -45,7 +46,10 @@ const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals }) => {
               <TableCell>{animal.nombre}</TableCell>
               <TableCell>
                 <EstadoChip estado={animal.estado} />
-              </TableCell>              
+              </TableCell>
+              <TableCell>
+                <LocalizacionChip localizacion={animal.localizacion} tipo={animal.tipo} />
+              </TableCell>                   
               <TableCell>{animal.numeroRegistro}</TableCell>
               <TableCell>{sexoLiterales(animal.sexo)}</TableCell>
               <TableCell>{animal.chip}</TableCell>

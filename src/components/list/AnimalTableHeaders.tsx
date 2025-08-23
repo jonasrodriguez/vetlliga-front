@@ -35,6 +35,15 @@ const AnimalTableHeaders: React.FC = () => {
         </TableCell>
         <TableCell>
           <TableSortLabel
+            active={filters.sortBy === 'localizacion'}
+            direction={filters.sortBy === 'localizacion' ? filters.sortDirection : 'asc'}
+            onClick={() => handleSort('localizacion')}
+          >
+            Localizacion
+          </TableSortLabel>
+        </TableCell>        
+        <TableCell>
+          <TableSortLabel
             active={filters.sortBy === 'numeroRegistro'}
             direction={filters.sortBy === 'numeroRegistro' ? filters.sortDirection : 'asc'}
             onClick={() => handleSort('numeroRegistro')}
@@ -85,6 +94,8 @@ const AnimalTableHeaders: React.FC = () => {
           <TableSortLabel>
             Enfermedad crónica
           </TableSortLabel>
+        </TableCell>
+        <TableCell>
         </TableCell>
       </TableRow>
     </TableHead>

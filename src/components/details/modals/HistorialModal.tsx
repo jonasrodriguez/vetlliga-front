@@ -150,9 +150,9 @@ const HistorialModal: React.FC<ModalProps> = ({ open, onClose, onSave, onDelete,
           </Box>
         </Box>
 
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ mt: 2 }} />
 
-        <Box sx={{ display: "flex", flexDirection: 'column', flexGrow: 1, gap: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: 'column', flexGrow: 1 }}>
           {toggleNewEntry && editEntry}
           {animal?.historial.map((entry, idx) => (
             toggleEdit === entry.id ? 
@@ -160,7 +160,7 @@ const HistorialModal: React.FC<ModalProps> = ({ open, onClose, onSave, onDelete,
               {editEntry}
             </>
             : 
-            <Box key={idx} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <Box key={idx} sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Typography variant="subtitle2" color="text.secondary">
                   {formatDate(entry.fecha)}
@@ -176,7 +176,7 @@ const HistorialModal: React.FC<ModalProps> = ({ open, onClose, onSave, onDelete,
               <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
                 {entry.descripcion}
               </Typography>
-              <Divider sx={{ my: 2 }} />
+              <Divider />
             </Box>
           ))}   
         </Box>      

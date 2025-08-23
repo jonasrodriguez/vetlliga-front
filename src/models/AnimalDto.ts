@@ -72,6 +72,18 @@ export const initialVacunacion: VacunacionDto = {
   producto: '',
 };
 
+export interface DocumentoDto {
+  id?: number;
+  fecha: string;
+  nombre: string;
+  descripcion: string;
+}
+
+export const initialDocumento: DocumentoDto = {
+  fecha: new Date().toISOString(),
+  nombre: '',
+  descripcion: '',
+};
 
 export interface AnimalDto {
   id: number;
@@ -106,6 +118,7 @@ export interface AnimalDto {
   pesos: PesoDto[];
   tests: TestDto[];
   vacunaciones: VacunacionDto[];
+  documentos: DocumentoDto[];
 }
 
 export const initialAnimal: AnimalDto = {
@@ -135,4 +148,5 @@ export const initialAnimal: AnimalDto = {
   pesos: [],
   tests: [],
   vacunaciones: [],
+  documentos: [],
 };
