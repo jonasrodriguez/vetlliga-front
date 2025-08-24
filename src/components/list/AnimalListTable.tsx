@@ -29,6 +29,13 @@ const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals }) => {
     navigate(`/ficha/${id}?historial=true`);
   };
 
+  const listadoEnfermedades = (animal: AnimalDto) => {
+    if (animal.enfermedades) {
+      return animal.enfermedades.split(';');
+    }
+    return [];
+  }
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -56,8 +63,8 @@ const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals }) => {
               <TableCell>{calculoEdad(animal.fechaNacimiento)}</TableCell>         
               <TableCell>{animal.ultimoPeso ? `${animal.ultimoPeso} kg` : '-'}</TableCell>
               <TableCell>{formatDate(animal.fechaEntrada)}</TableCell>
-              <TableCell>{animal.enfermedades}</TableCell>
-              
+              <TableCell>{listadoEnfermedades(animal).join(', ')}</TableCell>
+
               {/* Boton historial */}
               <TableCell  onClick={(e) => e.stopPropagation()} >
                 <Tooltip title="Mostrar historial">

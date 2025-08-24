@@ -18,12 +18,11 @@ interface PersonalInfoProps {
 
 const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
   const { updateAnimal } = useAnimalStore();
-
   const [tempAnimal, setTempAnimal] = useState<AnimalDto>({ ...animal });
   const [enfermedad, setEnfermedad] = useState('');
   const isGato = tempAnimal.tipo === 'GATO';
 
-  const enfermedades = tempAnimal.enfermedades.split(';');
+  const enfermedades = tempAnimal.enfermedades != null ? tempAnimal.enfermedades.split(';') : [];
 
   const handleDateChange = (field: keyof AnimalDto) => (newDate: Date | null) => {
     handleChange(field, newDate ? newDate.toISOString().split('T')[0] : '');
