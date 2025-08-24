@@ -12,7 +12,7 @@ const DetallesAnimal = () => {
 
   useEffect(() => {
     if (id) {
-      fetchAnimalById(Number(id), true);
+      fetchAnimalById(Number(id));
     }
   }, [id, fetchAnimalById]);
 
@@ -20,7 +20,7 @@ const DetallesAnimal = () => {
     return <p>Loading...</p>;
   }
 
-  return <DetalleLayout animal={animal} initialHistorial={initialHistorial} />;
+  return <DetalleLayout key={id} animal={animal} initialHistorial={initialHistorial} />;
 };
 
 export default DetallesAnimal;
