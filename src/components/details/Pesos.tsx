@@ -5,7 +5,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import PesosModal from './modals/PesosModal';
 import { AnimalDto, PesoDto } from '../../models/AnimalDto';
 import * as PesosService from '../../services/PesosService';
-import useAnimalStore from '../../stores/AnimalStore';
 import formatDate from '../../utils/formatDate';
 
 interface PesosProps {
@@ -13,11 +12,10 @@ interface PesosProps {
 }
 
 const Pesos: React.FC<PesosProps> = ({ animal }) => {
-
   const [currentPeso, setCurrentPeso] = useState<PesoDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const { fetchAnimalById } = useAnimalStore();
-  
+  const [pesos, setPesos] = useState<PesoDto[]>(animal.pesos || []);
+
   const handleAdd = () => {
     setCurrentPeso(null);
     setModalOpen(true);
@@ -30,17 +28,18 @@ const Pesos: React.FC<PesosProps> = ({ animal }) => {
 
   const handleSave = async (peso: PesoDto) => {
     if (peso.id) {
-      await PesosService.updatePeso(animal.id, peso);
+      const updatedPeso = await PesosService.updatePeso(animal.id, peso);
+      setPesos(prevPesos => prevPesos.map(p => p.id === updatedPeso.id ? updatedPeso : p));
     } else {
-      await PesosService.addPeso(animal.id, peso);
+      const nuevaPeso = await PesosService.addPeso(animal.id, peso);
+      setPesos(prevPesos => [nuevaPeso, ...prevPesos]);
     }
-    await fetchAnimalById(animal.id, true);
     setModalOpen(false);
   };
 
   const handleDelete = async (id: number) => {
     await PesosService.deletePeso(animal.id, id);
-    await fetchAnimalById(animal.id, true);
+    setPesos(prevPesos => prevPesos.filter(p => p.id !== id));
     setModalOpen(false);
   };
 
@@ -66,7 +65,7 @@ const Pesos: React.FC<PesosProps> = ({ animal }) => {
       </Grid>
 
       {/* Grid Rows */}
-      {animal?.pesos.map((entry) => (
+      {pesos.map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={6}>
             <Typography variant="body2">{formatDate(entry.fecha)}</Typography>

@@ -5,7 +5,6 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import * as IntervencionService from '../../services/IntervencionService';
 import IntervencionModal from './modals/IntervencionModal';
-import useAnimalStore from '../../stores/AnimalStore';
 import formatDate from '../../utils/formatDate';
 
 interface IntervencionProps {
@@ -13,10 +12,9 @@ interface IntervencionProps {
 }
 
 const Intervenciones: React.FC<IntervencionProps> = ({ animal }) => {
-
   const [currentEntry, setCurrentEntry] = useState<IntervencionDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const { fetchAnimalById } = useAnimalStore();
+  const [intervenciones, setIntervenciones] = useState<IntervencionDto[]>(animal.intervenciones || []);
 
   const handleAdd = () => {
     setCurrentEntry(null);
@@ -30,17 +28,18 @@ const Intervenciones: React.FC<IntervencionProps> = ({ animal }) => {
 
   const handleSave = async (intervencion: IntervencionDto) => {
     if (intervencion.id) {
-      await IntervencionService.updateIntervencion(animal.id, intervencion);
+      const update = await IntervencionService.updateIntervencion(animal.id, intervencion);
+      setIntervenciones(prevIntervenciones => prevIntervenciones.map(i => i.id === update.id ? update : i));
     } else {
-      await IntervencionService.addIntervencion(animal.id, intervencion);
+      const nueva = await IntervencionService.addIntervencion(animal.id, intervencion);
+      setIntervenciones(prevIntervenciones => [nueva, ...prevIntervenciones]);
     }
-    await fetchAnimalById(animal.id, true);
     setModalOpen(false);
   };
 
   const handleDelete = async (id: number) => {
     await IntervencionService.deleteIntervencion(animal.id, id);
-    await fetchAnimalById(animal.id, true);
+    setIntervenciones(prevIntervenciones => prevIntervenciones.filter(i => i.id !== id));
     setModalOpen(false);
   };
 
@@ -66,7 +65,7 @@ const Intervenciones: React.FC<IntervencionProps> = ({ animal }) => {
       </Grid>
 
       {/* Grid Rows */}
-      {animal?.intervenciones.map((entry) => (
+      {intervenciones.map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={3}>
             <Typography variant="body2">{formatDate(entry.fecha)}</Typography>

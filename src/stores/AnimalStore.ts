@@ -16,20 +16,10 @@ const useAnimalStore = create<AnimalStore>()(
   devtools((set) => ({
     animal: null,
     animals: [],
-    fetchAnimalById: async (id, force = false) => {
-      const { animals, animal } = useAnimalStore.getState();
+    fetchAnimalById: async (id) => {
 
-      if (!force) {
-        // If the animal is already selected or exists in the list, set it without fetching
-        const existingAnimal = animals.find((a) => a.id === id);
-        if (existingAnimal) {
-          set({ animal: existingAnimal });
-          return;
-        }
-        if (animal?.id === id) {
-          return;
-        }
-      }
+
+      set({ animal: null });
 
       // Otherwise, fetch it from the API
       const fetchedAnimal = await fetchAnimal(id);

@@ -5,7 +5,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import { AnimalDto, TestDto } from '../../models/AnimalDto';
 import * as TestService from '../../services/TestsService';
-import useAnimalStore from '../../stores/AnimalStore';
 import formatDate from '../../utils/formatDate';
 
 interface TestsProps {
@@ -13,10 +12,9 @@ interface TestsProps {
 }
 
 const Tests: React.FC<TestsProps> = ({ animal }) => {
-
   const [currentEntry, setCurrentEntry] = useState<TestDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const { fetchAnimalById } = useAnimalStore();
+  const [tests, setTests] = useState<TestDto[]>(animal?.tests || []);
 
   const handleAdd = () => {
     setCurrentEntry(null);
@@ -30,17 +28,18 @@ const Tests: React.FC<TestsProps> = ({ animal }) => {
 
   const handleSave = async (test: TestDto) => {
     if (test.id) {
-      await TestService.updateTest(animal.id, test);
+      const newTest = await TestService.updateTest(animal.id, test);
+      setTests(prevTests => prevTests.map(t => t.id === test.id ? newTest : t));
     } else {
-      await TestService.addTest(animal.id, test);
+      const newTest = await TestService.addTest(animal.id, test);
+      setTests(prevTests => [newTest, ...prevTests]);
     }
-    await fetchAnimalById(animal.id, true);
     setModalOpen(false);
   };
 
   const handleDelete = async (id: number) => {
     await TestService.deleteTest(animal.id, id);
-    await fetchAnimalById(animal.id, true);
+    setTests(prevTests => prevTests.filter(t => t.id !== id));
     setModalOpen(false);
   };
 
@@ -73,7 +72,7 @@ const Tests: React.FC<TestsProps> = ({ animal }) => {
       </Grid>
 
       {/* Grid Rows */}
-      {animal?.tests.map((entry) => (
+      {tests.map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={3}>
             <Typography variant="body2">{formatDate(entry.fecha)}</Typography>

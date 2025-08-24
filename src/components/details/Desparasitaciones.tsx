@@ -5,7 +5,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import { AnimalDto, DesparasitacionDto } from '../../models/AnimalDto';
 import * as DesparasitacionesService from '../../services/DesparasitacionesService';
 import DesparasitacionesModal from './modals/DesparasitacionesModal';
-import useAnimalStore from '../../stores/AnimalStore';
 import formatDate from '../../utils/formatDate';
 
 interface DesparasitacionesProps {
@@ -14,10 +13,9 @@ interface DesparasitacionesProps {
 }
 
 const Desparasitaciones: React.FC<DesparasitacionesProps> = ({ animal, type }) => {
-
   const [currentEntry, setCurrentEntry] = useState<DesparasitacionDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const { fetchAnimalById } = useAnimalStore();
+  const [desparasitaciones, setDesparasitaciones] = useState<DesparasitacionDto[]>(animal.desparasitaciones || []);
 
   const handleAdd = () => {
     setCurrentEntry(null);
@@ -31,17 +29,18 @@ const Desparasitaciones: React.FC<DesparasitacionesProps> = ({ animal, type }) =
 
   const handleSave = async (desparasitacion: DesparasitacionDto) => {
     if (desparasitacion.id) {
-      await DesparasitacionesService.updateDesparasitacion(animal.id, desparasitacion);
+      const updated = await DesparasitacionesService.updateDesparasitacion(animal.id, desparasitacion);
+      setDesparasitaciones(prevDesparasitaciones => prevDesparasitaciones.map(i => i.id === updated.id ? updated : i));
     } else {
-      await DesparasitacionesService.addDesparasitacion(animal.id, desparasitacion);
+      const nueva = await DesparasitacionesService.addDesparasitacion(animal.id, desparasitacion);
+      setDesparasitaciones(prevDesparasitaciones => [nueva, ...prevDesparasitaciones]);
     }
-    await fetchAnimalById(animal.id, true);
     setModalOpen(false);
   };
 
   const handleDelete = async (id: number) => {
     await DesparasitacionesService.deleteDesparasitacion(animal.id, id);
-    await fetchAnimalById(animal.id, true);
+    setDesparasitaciones(prevDesparasitaciones => prevDesparasitaciones.filter(i => i.id !== id));
     setModalOpen(false);
   };
 
@@ -67,7 +66,7 @@ const Desparasitaciones: React.FC<DesparasitacionesProps> = ({ animal, type }) =
       </Grid>
 
       {/* Grid Rows */}
-      {animal?.desparasitaciones.filter((entry) => entry.tipo.toLowerCase() === type.toLowerCase()).map((entry) => (
+      {desparasitaciones.filter((entry) => entry.tipo.toLowerCase() === type.toLowerCase()).map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={4}>
             <Typography variant="body2">{formatDate(entry.fecha)}</Typography>

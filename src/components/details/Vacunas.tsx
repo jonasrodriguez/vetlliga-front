@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Paper, Typography, Grid, IconButton, Button, Box } from '@mui/material';
 import { AnimalDto, VacunacionDto } from '../../models/AnimalDto';
-import useAnimalStore from '../../stores/AnimalStore';
 import formatDate from '../../utils/formatDate';
 import * as VacunasService from '../../services/VacunasService';
 import AddIcon from '@mui/icons-material/Add';
@@ -13,10 +12,9 @@ interface VacunacionProps {
 }
 
 const Vacunas: React.FC<VacunacionProps> = ({ animal }) => {
-
   const [currentVacunacion, setCurrentVacunacion] = useState<VacunacionDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const { fetchAnimalById } = useAnimalStore();
+  const [vacunas, setVacunas] = useState<VacunacionDto[]>(animal.vacunaciones || []);
 
   const handleAdd = () => {
     setCurrentVacunacion(null);
@@ -30,17 +28,18 @@ const Vacunas: React.FC<VacunacionProps> = ({ animal }) => {
 
   const handleSave = async (vacunacion: VacunacionDto) => {
     if (vacunacion.id) {
-      await VacunasService.updateVacuna(animal.id, vacunacion);
+      const vacuna = await VacunasService.updateVacuna(animal.id, vacunacion);
+      setVacunas(prevVacunas => prevVacunas.map(v => v.id === vacuna.id ? vacuna : v));
     } else {
-      await VacunasService.addVacuna(animal.id, vacunacion);
+      const nuevaVacuna = await VacunasService.addVacuna(animal.id, vacunacion);
+      setVacunas(prevVacunas => [nuevaVacuna, ...prevVacunas]);
     }
-    await fetchAnimalById(animal.id, true);
     setModalOpen(false);
   };
 
   const handleDelete = async (id: number) => {
     await VacunasService.deleteVacuna(animal.id, id);
-    await fetchAnimalById(animal.id, true);
+    setVacunas(prevVacunas => prevVacunas.filter(v => v.id !== id));
     setModalOpen(false);
   };
 
@@ -69,7 +68,7 @@ const Vacunas: React.FC<VacunacionProps> = ({ animal }) => {
       </Grid>
 
       {/* Grid Rows */}
-      {animal?.vacunaciones.map((entry) => (
+      {vacunas.map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={4}>
             <Typography variant="body2">{formatDate(entry.fecha)}</Typography>

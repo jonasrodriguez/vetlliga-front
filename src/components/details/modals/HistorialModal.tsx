@@ -5,8 +5,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { es } from 'date-fns/locale';
 import { Close, Add, Edit } from "@mui/icons-material";
-
-import { AnimalDto, HistorialDto, initialHistorial } from "../../../models/AnimalDto";
+import { HistorialDto, initialHistorial } from "../../../models/AnimalDto";
 import DeleteConfirmation from "../../shared/DeleteConfirmation";
 import formatDate from '../../../utils/formatDate';
 
@@ -15,7 +14,8 @@ type ModalProps = {
   onClose: () => void;
   onSave: (intervencion: HistorialDto) => void;
   onDelete: (id: number) => void;
-  animal: AnimalDto;
+  name: string;
+  historialList: HistorialDto[];
 };
 
 const style = {
@@ -34,7 +34,7 @@ const style = {
   flexDirection: "column",
 };
 
-const HistorialModal: React.FC<ModalProps> = ({ open, onClose, onSave, onDelete, animal }) => {
+const HistorialModal: React.FC<ModalProps> = ({ open, onClose, onSave, onDelete, name, historialList }) => {
 
   const [toggleNewEntry, setToggleNewEntry] = useState(false);
   const [toggleEdit, setToggleEdit] = useState<number | undefined>(undefined);
@@ -64,7 +64,7 @@ const HistorialModal: React.FC<ModalProps> = ({ open, onClose, onSave, onDelete,
   const onEdit = (historial: HistorialDto) => {
     setToggleNewEntry(false);
     setToggleEdit(historial.id);
-    setFormData(animal.historial.find(entry => entry.id === historial.id) || initialHistorial);
+    setFormData(historialList.find(entry => entry.id === historial.id) || initialHistorial);
   }
 
   const onCancel = () => {
@@ -138,7 +138,7 @@ const HistorialModal: React.FC<ModalProps> = ({ open, onClose, onSave, onDelete,
 
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Typography variant="h5" fontWeight="bold">
-            Historial Médico de {animal?.nombre}
+            Historial Médico de {name}
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Button startIcon={<Add />} variant="contained" color="primary" onClick={onNewEntry}>
@@ -154,7 +154,7 @@ const HistorialModal: React.FC<ModalProps> = ({ open, onClose, onSave, onDelete,
 
         <Box sx={{ display: "flex", flexDirection: 'column', flexGrow: 1 }}>
           {toggleNewEntry && editEntry}
-          {animal?.historial.map((entry, idx) => (
+          {historialList.map((entry, idx) => (
             toggleEdit === entry.id ? 
             <>
               {editEntry}

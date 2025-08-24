@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { AnimalDto, HistorialDto } from '../../models/AnimalDto';
 import * as HistorialService from '../../services/HistorialService';
 import HistorialModal from './modals/HistorialModal';
-import useAnimalStore from '../../stores/AnimalStore';
 
 interface HistorialProps {
   animal: AnimalDto;
@@ -10,9 +9,8 @@ interface HistorialProps {
 }
 
 const Historial: React.FC<HistorialProps> = ({ animal, onHistorialClose }) => {
-
   const [modalOpen, setModalOpen] = useState(true);
-  const { fetchAnimalById } = useAnimalStore();
+  const [historialList, setHistorialList] = useState<HistorialDto[]>(animal.historial || []);
 
   const onModalClose = () => {
     setModalOpen(false);
@@ -21,16 +19,18 @@ const Historial: React.FC<HistorialProps> = ({ animal, onHistorialClose }) => {
 
   const handleSave = async (historial: HistorialDto) => {
     if (historial.id) {
-      await HistorialService.updateHistorial(animal.id, historial);
+      const update = await HistorialService.updateHistorial(animal.id, historial);
+      setHistorialList((prev) => prev.map((h) => (h.id === update.id ? update : h)));
+
     } else {
-      await HistorialService.addHistorial(animal.id, historial);
+      const newEntry = await HistorialService.addHistorial(animal.id, historial);
+      setHistorialList((prev) => [newEntry, ...prev]);
     }
-    await fetchAnimalById(animal.id, true);
   };
 
   const handleDelete = async (id: number) => {
     await HistorialService.deleteHistorial(animal.id, id);
-    await fetchAnimalById(animal.id, true);
+    setHistorialList((prev) => prev.filter((h) => h.id !== id));
   };
 
   return (
@@ -40,7 +40,8 @@ const Historial: React.FC<HistorialProps> = ({ animal, onHistorialClose }) => {
         onClose={onModalClose}
         onSave={handleSave}
         onDelete={handleDelete}
-        animal={animal}
+        name={animal.nombre}
+        historialList={historialList}
       />
     </>
   );

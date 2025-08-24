@@ -4,7 +4,6 @@ import { Add, Delete } from '@mui/icons-material';
 import DocumentosModal from './modals/DocumentosModal';
 import * as DocumentoService from '../../services/DocumentoService';
 import { AnimalDto } from '../../models/AnimalDto';
-import useAnimalStore from '../../stores/AnimalStore';
 import formatDate from '../../utils/formatDate';
 import DeleteConfirmation from '../shared/DeleteConfirmation';
 
@@ -13,18 +12,17 @@ interface DocumentosProps {
 }
 
 const Documentos: React.FC<DocumentosProps> = ({ animal }) => {
-
   const [modalOpen, setModalOpen] = useState(false);
   const [deletion, setDeletion] = useState<number | null>(null);
-  const { fetchAnimalById } = useAnimalStore();
+  const [documentos, setDocumentos] = useState(animal.documentos || []);
   
   const handleAdd = () => {
     setModalOpen(true);
   };
 
   const handleUpload = async (file: File, descripcion: string) => {
-    await DocumentoService.addDocumento(animal.id, file, descripcion);
-    await fetchAnimalById(animal.id, true);
+    const newDocu = await DocumentoService.addDocumento(animal.id, file, descripcion);
+    setDocumentos(prevDocumentos => [newDocu, ...prevDocumentos]);
     setModalOpen(false);
   };
 
@@ -32,7 +30,7 @@ const Documentos: React.FC<DocumentosProps> = ({ animal }) => {
 
   const handleDelete = async () => {
     await DocumentoService.deleteDocumento(animal.id, deletion!);
-    await fetchAnimalById(animal.id, true);
+    setDocumentos(prevDocumentos => prevDocumentos.filter(d => d.id !== deletion));
     setDeletion(null);
   };
 
@@ -68,7 +66,7 @@ const Documentos: React.FC<DocumentosProps> = ({ animal }) => {
       </Grid>
 
       {/* Grid Rows */}
-      {animal?.documentos.map((entry) => (
+      {documentos.map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={2}>
             <Typography variant="body2">{formatDate(entry.fecha)}</Typography>
