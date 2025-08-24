@@ -26,7 +26,7 @@ const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals }) => {
   };
 
   const handleHistorialClick = (id: number) => {
-    navigate(`/ficha/${id}?historial=true`);
+    navigate(`/ficha/${id}`, { state: { initialHistorial: true } });
   };
 
   const listadoEnfermedades = (animal: AnimalDto) => {

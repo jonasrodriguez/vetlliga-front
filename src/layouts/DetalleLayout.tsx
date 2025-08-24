@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Tabs, Tab } from '@mui/material';
 import { AnimalDto } from '../models/AnimalDto';
 
@@ -14,21 +14,15 @@ import Historial from '../components/details/Historial';
 
 interface DetalleLayoutProps {
   animal: AnimalDto;
-  openHistorial?: boolean;
+  initialHistorial?: boolean;
 }
 
-const DetalleLayout: React.FC<DetalleLayoutProps> = ({ animal, openHistorial }) => {
-  const [tabIndex, setTabIndex] = useState(0);
+const DetalleLayout: React.FC<DetalleLayoutProps> = ({ animal, initialHistorial }) => {
+  const [tabIndex, setTabIndex] = useState(initialHistorial ? 1 : 0);
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
   };
-
-  useEffect(() => {
-    if (openHistorial) {
-      setTabIndex(1);
-    }
-  }, [openHistorial]);
 
   const onHistorialClose = () => {
     setTabIndex(0);
