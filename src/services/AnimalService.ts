@@ -56,3 +56,12 @@ export const updateAnimal = async (id: number, updates: Partial<AnimalDto>): Pro
   }
   return response.json();
 };
+
+export const disableAnimal = async (id: number): Promise<void> => {
+  const response = await authFetch(`${API_BASE_URL}/animales/${id}/active?active=false`, {
+    method: 'PATCH',
+  });
+  if (!response.ok) {
+    throw new Error('Failed to delete animal');
+  }
+};
