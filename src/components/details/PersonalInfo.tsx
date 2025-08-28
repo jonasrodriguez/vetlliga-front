@@ -11,6 +11,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AnimalDto } from '../../models/AnimalDto';
 import useAnimalStore from '../../stores/AnimalStore';
 import { sexoOptions, estadoOptions, localizacionGatosOptions, localizacionPerrosOptions } from '../../constants/animalOptions';
+import useNotificationStore from '../../stores/NotificationStore';
 
 interface PersonalInfoProps {
   animal: AnimalDto;
@@ -42,6 +43,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
 
   const handleSave = () => {
     updateAnimal(tempAnimal.id, tempAnimal);
+    useNotificationStore.getState().show('Animal actualizado correctamente', 'success');
   };
 
   const handleDeleteEnfermedad = (index: number) => {
