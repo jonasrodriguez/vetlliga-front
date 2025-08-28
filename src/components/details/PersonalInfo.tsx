@@ -43,7 +43,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
 
   const handleSave = () => {
     updateAnimal(tempAnimal.id, tempAnimal);
-    useNotificationStore.getState().show('Animal actualizado correctamente', 'success');
+    useNotificationStore.getState().show('Animal actualizado correctamente', 'success', 'bottom');
   };
 
   const handleDeleteEnfermedad = (index: number) => {
