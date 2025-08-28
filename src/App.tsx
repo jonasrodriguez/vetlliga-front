@@ -8,6 +8,7 @@ import { AnimalType } from './enums/AnimalType';
 
 import LoginPage from './pages/LoginPage';
 import MainLayout from './layouts/MainLayout';
+import GlobalNotification from './components/shared/GlobalNotification';
 const HomePage = lazy(() => import('./pages/HomePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const AnimalListPage = lazy(() => import('./pages/AnimalListPage'));
@@ -28,6 +29,7 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
+        <GlobalNotification />
         <Suspense fallback={<div style={{ textAlign: 'center', marginTop: '2rem' }}><CircularProgress /></div>}>
           <Routes>
             {/* Public routes */}

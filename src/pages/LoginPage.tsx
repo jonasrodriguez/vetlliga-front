@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Paper, Box, Button, Container, TextField, Typography, Alert } from "@mui/material";
+import { Paper, Box, Button, Container, TextField, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 
@@ -10,10 +10,11 @@ import { useAuthStore } from "../stores/AuthStore";
 
 import { useNavigate } from "react-router-dom";
 
+import useNotificationStore from "../stores/NotificationStore";
+
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState(false);
   const [backendStatus, setBackendStatus] = useState(false);
 
   const navigate = useNavigate();
@@ -39,24 +40,18 @@ const LoginPage: React.FC = () => {
   }, []);
 
   const handleLogin = async () => {
-
-    const token = await userLogin(username, password);
-    if (!token) {
-      setLoginError(true);
-      return;
-    }
-
-    setLoginError(false);
-    const payload = parseJwt(token);
-    console.log(JSON.stringify(payload));
-    login(payload);
-
-    navigate('/');
+    userLogin(username, password)
+    .then((token) => {
+      const payload = parseJwt(token);
+      login(payload);
+      navigate('/');
+    })
+    .catch(() => {
+      console.log("Error al iniciar sesión");
+      useNotificationStore.getState()
+        .show('Error al iniciar sesión. Revisa tus credenciales.', 'error');
+    })
   };
-
-  const loginErrorMessage = (
-    <Alert severity="error">Error al iniciar sesión. Revisa tus credenciales.</Alert>
-  );
 
   const backendStatusOk = (
     <>
@@ -79,42 +74,38 @@ const LoginPage: React.FC = () => {
   return (
     <Container maxWidth="sm">
       <Paper elevation={3} sx={{ display: 'flex', flexDirection: 'column', backgroundColor: "#fff", mt: 10, p: 4, gap: 2 }}>
-
         <Typography variant="h5" textAlign="center" gutterBottom>
           Bienvenid@ a Vetlliga
         </Typography>
+        <form style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} onSubmit={(e) => {
+          e.preventDefault(); // prevent page reload
+          handleLogin();
+        }}>
 
-        <TextField
-          label="Usuario"
-          fullWidth
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          autoFocus
-        />
+          <TextField
+            label="Usuario"
+            fullWidth
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            autoFocus
+          />
 
-        <TextField
-          label="Contraseña"
-          fullWidth
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <TextField
+            label="Contraseña"
+            fullWidth
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        {loginError && loginErrorMessage}
+          <Button variant="contained" color="primary" fullWidth type="submit">
+            Iniciar Sesión
+          </Button>
 
-        <Button variant="contained" color="primary" fullWidth onClick={handleLogin}>
-          Iniciar Sesión
-        </Button>
-
-        <Box display="flex" alignItems="center" justifyContent="center">
-          {/*backendStatus ? (
-            <>
-              <CircularProgress size={18} sx={{ mr: 1 }} />
-              <Typography variant="body2">Checking backend...</Typography>
-            </>
-          ) : */
-          backendStatus ? backendStatusOk : backendStatusKo}
-        </Box>
+          <Box display="flex" alignItems="center" justifyContent="center">
+            {backendStatus ? backendStatusOk : backendStatusKo}
+          </Box>
+        </form>
       </Paper>
     </Container>
   );
