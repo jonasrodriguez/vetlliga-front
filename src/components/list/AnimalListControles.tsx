@@ -51,6 +51,11 @@ const AnimalListControles: React.FC<ListadoFiltrosProps> = ({ type, onAddClick, 
       sx={{ width: 350 }}
       value={searchInput}
       onChange={(e) => setSearchInput(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          handleSearchClick();
+        }
+      }}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
@@ -62,7 +67,6 @@ const AnimalListControles: React.FC<ListadoFiltrosProps> = ({ type, onAddClick, 
       }}
     />
   );
-
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: 2 }}>
