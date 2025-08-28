@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Paper, Typography, Grid, IconButton, Button, Box } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
+import {Add, Edit} from '@mui/icons-material';
+
 import { AnimalDto, DesparasitacionDto } from '../../models/AnimalDto';
 import * as DesparasitacionesService from '../../services/DesparasitacionesService';
 import DesparasitacionesModal from './modals/DesparasitacionesModal';
 import formatDate from '../../utils/formatDate';
+
+import useAnimalStore from '../../stores/AnimalStore';
 
 interface DesparasitacionesProps {
   animal: AnimalDto;
@@ -15,7 +17,6 @@ interface DesparasitacionesProps {
 const Desparasitaciones: React.FC<DesparasitacionesProps> = ({ animal, type }) => {
   const [currentEntry, setCurrentEntry] = useState<DesparasitacionDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [desparasitaciones, setDesparasitaciones] = useState<DesparasitacionDto[]>(animal.desparasitaciones || []);
 
   const handleAdd = () => {
     setCurrentEntry(null);
@@ -29,19 +30,18 @@ const Desparasitaciones: React.FC<DesparasitacionesProps> = ({ animal, type }) =
 
   const handleSave = async (desparasitacion: DesparasitacionDto) => {
     if (desparasitacion.id) {
-      const updated = await DesparasitacionesService.updateDesparasitacion(animal.id, desparasitacion);
-      setDesparasitaciones(prevDesparasitaciones => prevDesparasitaciones.map(i => i.id === updated.id ? updated : i));
+      await DesparasitacionesService.updateDesparasitacion(animal.id, desparasitacion);
     } else {
-      const nueva = await DesparasitacionesService.addDesparasitacion(animal.id, desparasitacion);
-      setDesparasitaciones(prevDesparasitaciones => [nueva, ...prevDesparasitaciones]);
+      await DesparasitacionesService.addDesparasitacion(animal.id, desparasitacion);
     }
     setModalOpen(false);
+    useAnimalStore.getState().fetchAnimalById(animal.id, true);
   };
 
   const handleDelete = async (id: number) => {
     await DesparasitacionesService.deleteDesparasitacion(animal.id, id);
-    setDesparasitaciones(prevDesparasitaciones => prevDesparasitaciones.filter(i => i.id !== id));
     setModalOpen(false);
+    useAnimalStore.getState().fetchAnimalById(animal.id, true);
   };
 
   return (
@@ -49,7 +49,7 @@ const Desparasitaciones: React.FC<DesparasitacionesProps> = ({ animal, type }) =
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'space-between', gap: 2 }}>
         <Typography variant="h6"> Desparasitación {type}</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>        
+        <Button variant="contained" startIcon={<Add />} onClick={handleAdd}>        
           Nueva Desparasitación {type}
         </Button>
       </Box>
@@ -66,7 +66,7 @@ const Desparasitaciones: React.FC<DesparasitacionesProps> = ({ animal, type }) =
       </Grid>
 
       {/* Grid Rows */}
-      {desparasitaciones.filter((entry) => entry.tipo.toLowerCase() === type.toLowerCase()).map((entry) => (
+      {animal?.desparasitaciones.filter((entry) => entry.tipo.toLowerCase() === type.toLowerCase()).map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={4}>
             <Typography variant="body2">{formatDate(entry.fecha)}</Typography>
@@ -76,7 +76,7 @@ const Desparasitaciones: React.FC<DesparasitacionesProps> = ({ animal, type }) =
           </Grid>
           <Grid size={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <IconButton onClick={() => handleEdit(entry)} size="small">
-              <EditIcon fontSize="small" />
+              <Edit fontSize="small" />
             </IconButton>
           </Grid>
         </Grid>

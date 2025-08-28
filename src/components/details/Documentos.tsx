@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Paper, Typography, Grid, IconButton, Box, Button } from '@mui/material';
 import { Add, Delete } from '@mui/icons-material';
+
 import DocumentosModal from './modals/DocumentosModal';
 import * as DocumentoService from '../../services/DocumentoService';
 import { AnimalDto } from '../../models/AnimalDto';
 import formatDate from '../../utils/formatDate';
 import DeleteConfirmation from '../shared/DeleteConfirmation';
+
+import useAnimalStore from '../../stores/AnimalStore';
 
 interface DocumentosProps {
   animal: AnimalDto;
@@ -14,24 +17,23 @@ interface DocumentosProps {
 const Documentos: React.FC<DocumentosProps> = ({ animal }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [deletion, setDeletion] = useState<number | null>(null);
-  const [documentos, setDocumentos] = useState(animal.documentos || []);
   
   const handleAdd = () => {
     setModalOpen(true);
   };
 
   const handleUpload = async (file: File, descripcion: string) => {
-    const newDocu = await DocumentoService.addDocumento(animal.id, file, descripcion);
-    setDocumentos(prevDocumentos => [newDocu, ...prevDocumentos]);
+    await DocumentoService.addDocumento(animal.id, file, descripcion);
     setModalOpen(false);
+    useAnimalStore.getState().fetchAnimalById(animal.id, true);
   };
 
   const handleDeleteClick = (id: number) => setDeletion(id);
 
   const handleDelete = async () => {
     await DocumentoService.deleteDocumento(animal.id, deletion!);
-    setDocumentos(prevDocumentos => prevDocumentos.filter(d => d.id !== deletion));
     setDeletion(null);
+    useAnimalStore.getState().fetchAnimalById(animal.id, true);
   };
 
   const handleCancelDelete = () => setDeletion(null);
@@ -66,7 +68,7 @@ const Documentos: React.FC<DocumentosProps> = ({ animal }) => {
       </Grid>
 
       {/* Grid Rows */}
-      {documentos.map((entry) => (
+      {animal?.documentos.map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={2}>
             <Typography variant="body2">{formatDate(entry.fecha)}</Typography>

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Paper, Typography, Grid, IconButton, Button, Box } from '@mui/material';
+import {Add, Edit} from '@mui/icons-material';
+
 import { AnimalDto, IntervencionDto } from '../../models/AnimalDto';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
 import * as IntervencionService from '../../services/IntervencionService';
 import IntervencionModal from './modals/IntervencionModal';
 import formatDate from '../../utils/formatDate';
+
+import useAnimalStore from '../../stores/AnimalStore';
 
 interface IntervencionProps {
   animal: AnimalDto;
@@ -14,7 +16,6 @@ interface IntervencionProps {
 const Intervenciones: React.FC<IntervencionProps> = ({ animal }) => {
   const [currentEntry, setCurrentEntry] = useState<IntervencionDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [intervenciones, setIntervenciones] = useState<IntervencionDto[]>(animal.intervenciones || []);
 
   const handleAdd = () => {
     setCurrentEntry(null);
@@ -28,19 +29,18 @@ const Intervenciones: React.FC<IntervencionProps> = ({ animal }) => {
 
   const handleSave = async (intervencion: IntervencionDto) => {
     if (intervencion.id) {
-      const update = await IntervencionService.updateIntervencion(animal.id, intervencion);
-      setIntervenciones(prevIntervenciones => prevIntervenciones.map(i => i.id === update.id ? update : i));
+      await IntervencionService.updateIntervencion(animal.id, intervencion);
     } else {
-      const nueva = await IntervencionService.addIntervencion(animal.id, intervencion);
-      setIntervenciones(prevIntervenciones => [nueva, ...prevIntervenciones]);
+      await IntervencionService.addIntervencion(animal.id, intervencion);
     }
     setModalOpen(false);
+    useAnimalStore.getState().fetchAnimalById(animal.id, true);
   };
 
   const handleDelete = async (id: number) => {
     await IntervencionService.deleteIntervencion(animal.id, id);
-    setIntervenciones(prevIntervenciones => prevIntervenciones.filter(i => i.id !== id));
     setModalOpen(false);
+    useAnimalStore.getState().fetchAnimalById(animal.id, true);
   };
 
   return (
@@ -48,7 +48,7 @@ const Intervenciones: React.FC<IntervencionProps> = ({ animal }) => {
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'space-between', gap: 2 }}>
         <Typography variant="h6"> Intervenciones Quirurgicas</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>        
+        <Button variant="contained" startIcon={<Add />} onClick={handleAdd}>        
           Nueva Intervención
         </Button>
       </Box>
@@ -65,7 +65,7 @@ const Intervenciones: React.FC<IntervencionProps> = ({ animal }) => {
       </Grid>
 
       {/* Grid Rows */}
-      {intervenciones.map((entry) => (
+      {animal?.intervenciones.map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={3}>
             <Typography variant="body2">{formatDate(entry.fecha)}</Typography>
@@ -75,7 +75,7 @@ const Intervenciones: React.FC<IntervencionProps> = ({ animal }) => {
           </Grid>
           <Grid size={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <IconButton onClick={() => handleEdit(entry)} size="small">
-              <EditIcon fontSize="small" />
+              <Edit fontSize="small" />
             </IconButton>
           </Grid>
         </Grid>

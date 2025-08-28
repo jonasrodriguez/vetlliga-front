@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 
 import useAnimalStore from '../stores/AnimalStore';
@@ -9,6 +9,8 @@ const DetallesAnimal = () => {
   const { id } = useParams<{ id: string }>();  
   const { animal, fetchAnimalById } = useAnimalStore();
   const initialHistorial = location.state?.initialHistorial ?? false;
+  const [historial, setHistorial] = useState(initialHistorial);
+  const [tabIndex, setTabIndex] = useState(historial ? 1 : 0);
 
   useEffect(() => {
     if (id) {
@@ -16,11 +18,15 @@ const DetallesAnimal = () => {
     }
   }, [id, fetchAnimalById]);
 
+  const handleTabChange = (newValue: number) => {
+    setTabIndex(newValue);
+  };
+
   if (!animal) {
     return <p>Loading...</p>;
   }
 
-  return <DetalleLayout key={id} animal={animal} initialHistorial={initialHistorial} />;
+  return <DetalleLayout key={id} animal={animal} tabIndex={tabIndex} onTabChange={handleTabChange} onHistorialClose={() => setHistorial(false)} />;
 };
 
 export default DetallesAnimal;

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Paper, Typography, Grid, IconButton, Button, Box } from '@mui/material';
+import {Add, Edit} from '@mui/icons-material';
+
 import { AnimalDto, VacunacionDto } from '../../models/AnimalDto';
 import formatDate from '../../utils/formatDate';
 import * as VacunasService from '../../services/VacunasService';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
 import VacunasModal from './modals/VacunasModal';
+
+import useAnimalStore from '../../stores/AnimalStore';
 
 interface VacunacionProps {
   animal: AnimalDto;
@@ -14,7 +16,6 @@ interface VacunacionProps {
 const Vacunas: React.FC<VacunacionProps> = ({ animal }) => {
   const [currentVacunacion, setCurrentVacunacion] = useState<VacunacionDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [vacunas, setVacunas] = useState<VacunacionDto[]>(animal.vacunaciones || []);
 
   const handleAdd = () => {
     setCurrentVacunacion(null);
@@ -28,19 +29,18 @@ const Vacunas: React.FC<VacunacionProps> = ({ animal }) => {
 
   const handleSave = async (vacunacion: VacunacionDto) => {
     if (vacunacion.id) {
-      const vacuna = await VacunasService.updateVacuna(animal.id, vacunacion);
-      setVacunas(prevVacunas => prevVacunas.map(v => v.id === vacuna.id ? vacuna : v));
+      await VacunasService.updateVacuna(animal.id, vacunacion);
     } else {
-      const nuevaVacuna = await VacunasService.addVacuna(animal.id, vacunacion);
-      setVacunas(prevVacunas => [nuevaVacuna, ...prevVacunas]);
+      await VacunasService.addVacuna(animal.id, vacunacion);
     }
     setModalOpen(false);
+    useAnimalStore.getState().fetchAnimalById(animal.id, true);
   };
 
   const handleDelete = async (id: number) => {
     await VacunasService.deleteVacuna(animal.id, id);
-    setVacunas(prevVacunas => prevVacunas.filter(v => v.id !== id));
     setModalOpen(false);
+    useAnimalStore.getState().fetchAnimalById(animal.id, true);
   };
 
   return (
@@ -48,7 +48,7 @@ const Vacunas: React.FC<VacunacionProps> = ({ animal }) => {
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'space-between', gap: 2 }}>
         <Typography variant="h6"> Vacunaciones</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>        
+        <Button variant="contained" startIcon={<Add />} onClick={handleAdd}>        
           Nueva Vacunación
         </Button>
       </Box>
@@ -68,7 +68,7 @@ const Vacunas: React.FC<VacunacionProps> = ({ animal }) => {
       </Grid>
 
       {/* Grid Rows */}
-      {vacunas.map((entry) => (
+      {animal?.vacunaciones.map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={4}>
             <Typography variant="body2">{formatDate(entry.fecha)}</Typography>
@@ -81,7 +81,7 @@ const Vacunas: React.FC<VacunacionProps> = ({ animal }) => {
           </Grid>
           <Grid size={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <IconButton onClick={() => handleEdit(entry)} size="small">
-              <EditIcon fontSize="small" />
+              <Edit fontSize="small" />
             </IconButton>
           </Grid>
         </Grid>

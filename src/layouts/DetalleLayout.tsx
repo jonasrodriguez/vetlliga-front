@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Tabs, Tab } from '@mui/material';
 import { AnimalDto } from '../models/AnimalDto';
 
@@ -14,18 +14,20 @@ import Historial from '../components/details/Historial';
 
 interface DetalleLayoutProps {
   animal: AnimalDto;
-  initialHistorial?: boolean;
+  tabIndex: number;
+  onTabChange: (newValue: number) => void;
+  onHistorialClose: () => void;
 }
 
-const DetalleLayout: React.FC<DetalleLayoutProps> = ({ animal, initialHistorial }) => {
-  const [tabIndex, setTabIndex] = useState(initialHistorial ? 1 : 0);
+const DetalleLayout: React.FC<DetalleLayoutProps> = ({ animal, tabIndex, onTabChange, onHistorialClose }) => {
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    setTabIndex(newValue);
+    onTabChange(newValue);
   };
 
-  const onHistorialClose = () => {
-    setTabIndex(0);
+  const handleHistorialClose = () => {
+    onTabChange(0);
+    onHistorialClose();
   };
 
   const fichaPesos = {
@@ -73,7 +75,7 @@ const DetalleLayout: React.FC<DetalleLayoutProps> = ({ animal, initialHistorial 
 
   const historial ={
     label: 'Historial',
-    content: <Historial animal={animal} onHistorialClose={onHistorialClose} />,
+    content: <Historial animal={animal} onHistorialClose={handleHistorialClose} />,
   };
 
   const docus ={

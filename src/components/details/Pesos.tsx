@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Paper, Typography, Grid, IconButton, Button, Box } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
+import {Add, Edit} from '@mui/icons-material';
+
 import PesosModal from './modals/PesosModal';
 import { AnimalDto, PesoDto } from '../../models/AnimalDto';
 import * as PesosService from '../../services/PesosService';
 import formatDate from '../../utils/formatDate';
+
+import useAnimalStore from '../../stores/AnimalStore';
 
 interface PesosProps {
   animal: AnimalDto;
@@ -14,7 +16,6 @@ interface PesosProps {
 const Pesos: React.FC<PesosProps> = ({ animal }) => {
   const [currentPeso, setCurrentPeso] = useState<PesoDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [pesos, setPesos] = useState<PesoDto[]>(animal.pesos || []);
 
   const handleAdd = () => {
     setCurrentPeso(null);
@@ -28,19 +29,18 @@ const Pesos: React.FC<PesosProps> = ({ animal }) => {
 
   const handleSave = async (peso: PesoDto) => {
     if (peso.id) {
-      const updatedPeso = await PesosService.updatePeso(animal.id, peso);
-      setPesos(prevPesos => prevPesos.map(p => p.id === updatedPeso.id ? updatedPeso : p));
+      await PesosService.updatePeso(animal.id, peso);
     } else {
-      const nuevaPeso = await PesosService.addPeso(animal.id, peso);
-      setPesos(prevPesos => [nuevaPeso, ...prevPesos]);
+      await PesosService.addPeso(animal.id, peso);
     }
     setModalOpen(false);
+    useAnimalStore.getState().fetchAnimalById(animal.id, true);
   };
 
   const handleDelete = async (id: number) => {
     await PesosService.deletePeso(animal.id, id);
-    setPesos(prevPesos => prevPesos.filter(p => p.id !== id));
     setModalOpen(false);
+    useAnimalStore.getState().fetchAnimalById(animal.id, true);
   };
 
   return (
@@ -48,7 +48,7 @@ const Pesos: React.FC<PesosProps> = ({ animal }) => {
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'space-between', gap: 2 }}>
         <Typography variant="h6"> Pesos</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>        
+        <Button variant="contained" startIcon={<Add />} onClick={handleAdd}>        
           Nuevo Peso
         </Button>
       </Box>
@@ -65,7 +65,7 @@ const Pesos: React.FC<PesosProps> = ({ animal }) => {
       </Grid>
 
       {/* Grid Rows */}
-      {pesos.map((entry) => (
+      {animal?.pesos.map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={6}>
             <Typography variant="body2">{formatDate(entry.fecha)}</Typography>
@@ -75,7 +75,7 @@ const Pesos: React.FC<PesosProps> = ({ animal }) => {
           </Grid>
           <Grid size={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <IconButton onClick={() => handleEdit(entry)} size="small">
-              <EditIcon fontSize="small" />
+              <Edit fontSize="small" />
             </IconButton>
           </Grid>
         </Grid>

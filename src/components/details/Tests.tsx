@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Paper, Typography, Grid, IconButton, Box, Button } from '@mui/material';
+import {Add, Edit} from '@mui/icons-material';
+
 import TestsModal from './modals/TestsModal';
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
 import { AnimalDto, TestDto } from '../../models/AnimalDto';
 import * as TestService from '../../services/TestsService';
 import formatDate from '../../utils/formatDate';
+
+import useAnimalStore from '../../stores/AnimalStore';
 
 interface TestsProps {
   animal: AnimalDto;
@@ -14,7 +16,6 @@ interface TestsProps {
 const Tests: React.FC<TestsProps> = ({ animal }) => {
   const [currentEntry, setCurrentEntry] = useState<TestDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [tests, setTests] = useState<TestDto[]>(animal?.tests || []);
 
   const handleAdd = () => {
     setCurrentEntry(null);
@@ -28,19 +29,18 @@ const Tests: React.FC<TestsProps> = ({ animal }) => {
 
   const handleSave = async (test: TestDto) => {
     if (test.id) {
-      const newTest = await TestService.updateTest(animal.id, test);
-      setTests(prevTests => prevTests.map(t => t.id === test.id ? newTest : t));
+      await TestService.updateTest(animal.id, test);
     } else {
-      const newTest = await TestService.addTest(animal.id, test);
-      setTests(prevTests => [newTest, ...prevTests]);
+      await TestService.addTest(animal.id, test);
     }
     setModalOpen(false);
+    useAnimalStore.getState().fetchAnimalById(animal.id, true);
   };
 
   const handleDelete = async (id: number) => {
     await TestService.deleteTest(animal.id, id);
-    setTests(prevTests => prevTests.filter(t => t.id !== id));
     setModalOpen(false);
+    useAnimalStore.getState().fetchAnimalById(animal.id, true);
   };
 
   return (
@@ -48,7 +48,7 @@ const Tests: React.FC<TestsProps> = ({ animal }) => {
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'space-between', gap: 2 }}>
         <Typography variant="h6"> Tests y Pruebas Especificas</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>        
+        <Button variant="contained" startIcon={<Add />} onClick={handleAdd}>        
           Nuevo Test
         </Button>
       </Box>
@@ -72,7 +72,7 @@ const Tests: React.FC<TestsProps> = ({ animal }) => {
       </Grid>
 
       {/* Grid Rows */}
-      {tests.map((entry) => (
+      {animal?.tests.map((entry) => (
         <Grid container spacing={2} key={entry.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={3}>
             <Typography variant="body2">{formatDate(entry.fecha)}</Typography>
@@ -88,7 +88,7 @@ const Tests: React.FC<TestsProps> = ({ animal }) => {
           </Grid>
           <Grid size={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <IconButton onClick={() => handleEdit(entry)} size="small">
-              <EditIcon fontSize="small" />
+              <Edit fontSize="small" />
             </IconButton>
           </Grid>
         </Grid>

@@ -18,14 +18,18 @@ const useAnimalStore = create<AnimalStore>((set, get) => ({
   animalList: [],
   page: null,
 
-  fetchAnimalById: async (id) => {
+  fetchAnimalById: async (id, force = false) => {
+    /*set({ animal: null });
     const existing = get().animalList.find((a) => a.id === id);
-    if (existing) {
+    if (existing && !force) {
       set({ animal: existing });
     } else {
       const fetchedAnimal = await animalService.fetchAnimal(id);
       set({ animal: fetchedAnimal });
-    }
+    }*/
+    set({ animal: null });
+    const fetchedAnimal = await animalService.fetchAnimal(id);
+    set({ animal: fetchedAnimal });
   },
 
   fetchAllAnimals: async (criteria: Partial<AnimalCriteria>) => {
