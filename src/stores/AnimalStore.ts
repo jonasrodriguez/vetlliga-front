@@ -13,12 +13,16 @@ interface AnimalStore {
   updateAnimal: (id: number, updates: Partial<AnimalDto>) => Promise<void>;
 }
 
-const useAnimalStore = create<AnimalStore>((set, get) => ({
+const useAnimalStore = create<AnimalStore>((set) => ({
   animal: null,
   animalList: [],
   page: null,
 
   fetchAnimalById: async (id, force = false) => {
+    if (force) {
+      set({ animal: null });
+    }
+
     /*set({ animal: null });
     const existing = get().animalList.find((a) => a.id === id);
     if (existing && !force) {
