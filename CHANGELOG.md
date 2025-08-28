@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.0] - 2025-08-28
+### Added
+- Added global notification snackbar
+- Login errors will appear on the snackbar
+- Personal info update will appear on snackbar
+- Search box also searches by "enfermedades"
+
+### Changed
+- Login accept enter key press
+- Search box accept enter key press
+- "Nombre" is the default sorting parameter
+
+### Fixed
+- Fixed issues with inconsistent data when updating some of the animal details
+---
+
 ## [1.2.0] - 2025-08-28
 ### Added
 - Added pagination support for animal listing
