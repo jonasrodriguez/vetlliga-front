@@ -1,4 +1,4 @@
-import { AnimalDto } from '../models/AnimalDto';
+import { AnimalDto, AnimalPages } from '../models/AnimalDto';
 import { AnimalCriteria } from '../models/AnimalCriteria';
 import { authFetch } from '../utils/fetch';
 
@@ -12,7 +12,7 @@ export const fetchAnimal = async (id: number): Promise<AnimalDto> => {
   return response.json();
 };
 
-export const fetchAllAnimals = async (criteria: Partial<AnimalCriteria> = {}): Promise<AnimalDto[]> => {
+export const fetchAllAnimals = async (criteria: Partial<AnimalCriteria> = {}): Promise<AnimalPages> => {
 
   const queryParams = new URLSearchParams(
     Object.entries(criteria || {}).reduce((acc, [key, value]) => {
@@ -31,8 +31,7 @@ export const fetchAllAnimals = async (criteria: Partial<AnimalCriteria> = {}): P
     throw new Error('Failed to fetch animals');
   }
 
-  const animals: AnimalDto[] = await response.json();
-  return animals;
+  return await response.json();
 };
 
 export const createAnimal = async (newAnimal: Omit<AnimalDto, 'id'>): Promise<AnimalDto> => {

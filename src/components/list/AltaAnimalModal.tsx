@@ -6,24 +6,26 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { es } from 'date-fns/locale';
 import CloseIcon from '@mui/icons-material/Close';
 
+import useAnimalStore from '../../stores/AnimalStore';
+
 import { AnimalDto, initialAnimal } from '../../models/AnimalDto';
 import { sexoOptions, estadoOptions, localizacionGatosOptions, localizacionPerrosOptions } from '../../constants/animalOptions';
 import ListadoChips from '../shared/ListadoChips';
 
 interface AltaAnimalModalProps {
   open: boolean;
-  onClose: () => void;
-  onSave: (animal: AnimalDto) => void;
   type: string;
-  saving?: boolean;
-  error?: string | null;
+  onClose: () => void;
+  onAlta: (id: number) => void;
 }
 
-const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, onClose, onSave, type, saving, error }) => {
+const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, type, onClose, onAlta }) => {
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [tempAnimal, setTempAnimal] = useState<AnimalDto>(initialAnimal);
-  const [validationError, setValidationError] = useState<string | null>(null);
-  const isGato = type === 'G';
+  const { addAnimal } = useAnimalStore();
 
+  const isGato = type === 'G';
   const enfermedades = tempAnimal.enfermedades.split(';');
 
   useEffect(() => {
@@ -51,14 +53,18 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, onClose, onSave
   const handleFechaEstadoChange = handleDateChange('fechaEstado');
   const handleFechaLocalizacionChange = handleDateChange('fechaLocalizacion');
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    setSaving(true);
     if (!tempAnimal.sexo || !tempAnimal.estado || !tempAnimal.localizacion) {
-      setValidationError("Por favor, seleccione el sexo, estado y localizacion para realizar un alta correctamente.");
+      setError("Por favor, seleccione el sexo, estado y localizacion para realizar un alta correctamente.");
       return;
     }
-    onSave(tempAnimal);
+    await addAnimal(tempAnimal)
+      .then((response) => onAlta(response.id))
+      .catch(() => setError("No se pudo guardar el animal. Intenta nuevamente."))
+      .finally(() => setSaving(false));
   };
-  
+
   const handleClose = () => {
     onClose();
   };
@@ -251,9 +257,9 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, onClose, onSave
           </IconButton>
         </Box>
         {content}
-        {(error || validationError) && (
+        {error && (
           <Typography color="error" sx={{ mt: 2 }}>
-            {validationError || error}
+            {error}
           </Typography>
         )}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, gap: 1 }}>

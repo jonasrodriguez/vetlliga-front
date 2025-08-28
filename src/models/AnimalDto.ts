@@ -150,3 +150,15 @@ export const initialAnimal: AnimalDto = {
   vacunaciones: [],
   documentos: [],
 };
+
+export interface Page {
+  size: number;
+  number: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+export interface AnimalPages {
+  content: AnimalDto[];
+  page: Page;
+}

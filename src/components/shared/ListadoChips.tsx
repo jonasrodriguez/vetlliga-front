@@ -17,7 +17,6 @@ const ListadoChips: React.FC<ListadoChipsProps> = ({ title, values, handleAddNew
     handleAddNewValue(newValue.trim());
     setNewValue('');
   };
-  console.log('values', values);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 2 }}>
