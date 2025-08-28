@@ -10,8 +10,8 @@ interface AnimalFilterStore {
 }
 
 const initialFilters: AnimalCriteria = {
-  sortBy: "fechaEntrada",
-  sortDirection: "desc",
+  sortBy: "nombre",
+  sortDirection: "asc",
   page: 0,
   pageSize: 25,
 };
