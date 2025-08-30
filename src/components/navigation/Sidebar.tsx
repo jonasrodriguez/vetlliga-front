@@ -40,6 +40,9 @@ function Sidebar({ drawerWidth }: SidebarProps) {
         <ListItemButton component={RouterLink} to="/perros/adoptados" sx={{ pl: 4 }}>
           <Typography variant="body2">Adoptados</Typography>
         </ListItemButton>
+        <ListItemButton component={RouterLink} to="/perros/propietario" sx={{ pl: 4 }}>
+          <Typography variant="body2">De Propietario</Typography>
+        </ListItemButton>
         <ListItemButton component={RouterLink} to="/perros/fallecidos" sx={{ pl: 4 }}>
           <Typography variant="body2">Fallecidos</Typography>
         </ListItemButton>
@@ -61,6 +64,9 @@ function Sidebar({ drawerWidth }: SidebarProps) {
         </ListItemButton>
         <ListItemButton component={RouterLink} to="/gatos/adoptados" sx={{ pl: 4 }}>
           <Typography variant="body2">Adoptados</Typography>
+        </ListItemButton>
+        <ListItemButton component={RouterLink} to="/gatos/propietario" sx={{ pl: 4 }}>
+          <Typography variant="body2">De Propietario</Typography>
         </ListItemButton>
         <ListItemButton component={RouterLink} to="/gatos/fallecidos" sx={{ pl: 4 }}>
           <Typography variant="body2">Fallecidos</Typography>

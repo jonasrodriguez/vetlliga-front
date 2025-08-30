@@ -1,25 +1,28 @@
 import React from 'react';
 import { Chip } from '@mui/material';
 import { EstadoAnimal, getEstadoAnimalDescripcion } from '../../enums/EstadoAnimal';
+import { ColorCodes } from '../../enums/ColorCodes';
 
 interface EstadoChipProps {
   estado: string;
 }
 
-const getEstadoChipColor = (estado: EstadoAnimal | null): 'primary' | 'info' | 'warning' | 'success' | 'error' | 'default' => {
+const getEstadoChipColor = (estado: EstadoAnimal | null): string => {
   switch (estado) {
     case EstadoAnimal.EN_PROTECTORA:
-      return 'primary'; // Blue
+      return ColorCodes.Blue;
     case EstadoAnimal.EN_ACOGIDA:
-      return 'info'; // Light blue
+      return ColorCodes.Teal;
     case EstadoAnimal.RESERVADO:
-      return 'warning'; // Yellow
+      return ColorCodes.Orange;
     case EstadoAnimal.ADOPTADO:
-      return 'success'; // Green
+      return ColorCodes.Green;
     case EstadoAnimal.FALLECIDO:
-      return 'error'; // Red
+      return ColorCodes.Red;
+    case EstadoAnimal.PROPIETARIO:
+      return ColorCodes.Brown;
     default:
-      return 'default'; // Gray
+      return ColorCodes.Grey;
   }
 };
 
@@ -32,7 +35,11 @@ const EstadoChip: React.FC<EstadoChipProps> = ({ estado }) => {
   return (
     <Chip
       label={getEstadoAnimalDescripcion(estadoEnum)}
-      color={getEstadoChipColor(estadoEnum)}
+      sx={{
+        backgroundColor: getEstadoChipColor(estadoEnum),
+        color: '#fff',
+        fontWeight: 500,
+      }}
     />
   );
 };

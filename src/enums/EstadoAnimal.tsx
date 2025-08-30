@@ -4,7 +4,9 @@ export enum EstadoAnimal {
   RESERVADO = '2',
   ADOPTADO = '3',
   FALLECIDO = '4',
-}
+  PROPIETARIO = '5'
+};
+
 
 export function getEstadoAnimalDescripcion(estado: EstadoAnimal): string {  
   switch (estado) {
@@ -18,6 +20,8 @@ export function getEstadoAnimalDescripcion(estado: EstadoAnimal): string {
       return 'Adoptado';
     case EstadoAnimal.FALLECIDO:
       return 'Fallecido';
+    case EstadoAnimal.PROPIETARIO:
+      return 'De Propietario';
     default:
       return 'Desconocido';
   }
@@ -35,6 +39,8 @@ export const  getEstadoAnimalFromRoute = (routeParam: string): EstadoAnimal | nu
       return EstadoAnimal.ADOPTADO;
     case 'fallecidos':
       return EstadoAnimal.FALLECIDO;
+    case 'propietario':
+      return EstadoAnimal.PROPIETARIO;
     default:
       return null;
   }
