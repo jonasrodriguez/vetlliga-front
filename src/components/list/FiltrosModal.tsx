@@ -29,7 +29,10 @@ const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen,
   }, [isOpen, filters]);
 
   const handleDateChange = (key: keyof typeof filters) => (newDate: Date | null) => {
-    setTempFilter({ ...tempFilter, [key]: newDate ? newDate.toISOString() : '' });
+    setTempFilter({
+      ...tempFilter,
+      [key]: newDate ? newDate.toISOString().split("T")[0] : ""
+    });
   };
 
   const renderMenuItems = ( options: { value: string | number | undefined; label: string }[]) => [
@@ -208,11 +211,11 @@ const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen,
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-          <Button variant="contained" color="primary" onClick={applyFilters}>
-            Aplicar Filtros
-          </Button>
           <Button  variant="contained" onClick={resetFilters} sx={{ backgroundColor: 'red','&:hover': { backgroundColor: 'darkred' }, } }>
             Resetear Filtros
+          </Button>
+          <Button variant="contained" color="primary" onClick={applyFilters}>
+            Aplicar Filtros
           </Button>
         </Box>
 
