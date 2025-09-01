@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
+
+import useConfigStore from '../stores/ConfigStore';
 
 import Sidebar from '../components/navigation/Sidebar';
 import Header from '../components/navigation/Header';
@@ -10,6 +12,11 @@ const headerHeight = 64;
 const drawerWidth = 240;
 
 const MainLayout: React.FC = () => {
+
+  useEffect(() => {
+    useConfigStore.getState().fetchConfig();
+  }, []);
+
   return (
 
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', overflowX: 'hidden' }}>
