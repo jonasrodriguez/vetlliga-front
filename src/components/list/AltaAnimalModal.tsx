@@ -6,11 +6,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { es } from 'date-fns/locale';
 import CloseIcon from '@mui/icons-material/Close';
 
-import useAnimalStore from '../../stores/AnimalStore';
-
 import { AnimalDto, initialAnimal } from '../../models/AnimalDto';
-import { sexoOptions, estadoOptions, localizacionGatosOptions, localizacionPerrosOptions } from '../../constants/animalOptions';
+import { sexoOptions, estadoOptions } from '../../constants/animalOptions';
 import ListadoChips from '../shared/ListadoChips';
+
+import useAnimalStore from '../../stores/AnimalStore';
+import useConfigStore from '../../stores/ConfigStore';
 
 interface AltaAnimalModalProps {
   open: boolean;
@@ -24,6 +25,8 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, type, onClose, 
   const [error, setError] = useState<string | null>(null);
   const [tempAnimal, setTempAnimal] = useState<AnimalDto>(initialAnimal);
   const { addAnimal } = useAnimalStore();
+
+  const { localizacionesGato, localizacionesPerro } = useConfigStore();
 
   const isGato = type === 'G';
   const enfermedades = tempAnimal.enfermedades.split(';');
@@ -194,8 +197,8 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, type, onClose, 
                   value={tempAnimal.localizacion}
                   onChange={e => handleChange('localizacion', e.target.value)}
                 >
-                  {(isGato ? localizacionGatosOptions : localizacionPerrosOptions).map(opt => (
-                    <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
+                  {(isGato ? localizacionesGato : localizacionesPerro).map(opt => (
+                    <MenuItem key={opt.id ?? '-'} value={opt.id}>{opt.nombre}</MenuItem>
                   ))}
                 </Select>
               </FormControl>

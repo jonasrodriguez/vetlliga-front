@@ -100,7 +100,6 @@ export interface AnimalDto {
   enfermedades: string;
   antecedentes: string;
   localizacion: string;
-  localizacionDescripcion: string;
   fechaLocalizacion: string;
   estado: string;
   estadoDescripcion: string;
@@ -136,7 +135,6 @@ export const initialAnimal: AnimalDto = {
   enfermedades: '',
   antecedentes: '',
   localizacion: '',
-  localizacionDescripcion: '',
   fechaLocalizacion: new Date().toISOString().split('T')[0],
   estado: '',
   estadoDescripcion: '',

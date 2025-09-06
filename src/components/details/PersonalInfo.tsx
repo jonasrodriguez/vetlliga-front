@@ -10,8 +10,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 import { AnimalDto } from '../../models/AnimalDto';
 import useAnimalStore from '../../stores/AnimalStore';
-import { sexoOptions, estadoOptions, localizacionGatosOptions, localizacionPerrosOptions } from '../../constants/animalOptions';
+import { sexoOptions, estadoOptions } from '../../constants/animalOptions';
+
 import useNotificationStore from '../../stores/NotificationStore';
+import useConfigStore from '../../stores/ConfigStore';
 
 interface PersonalInfoProps {
   animal: AnimalDto;
@@ -22,6 +24,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
   const [tempAnimal, setTempAnimal] = useState<AnimalDto>({ ...animal });
   const [enfermedad, setEnfermedad] = useState('');
   const isGato = tempAnimal.tipo === 'GATO';
+
+  const { localizacionesGato, localizacionesPerro } = useConfigStore();
 
   const enfermedades = tempAnimal.enfermedades != null ? tempAnimal.enfermedades.split(';') : [];
 
@@ -70,6 +74,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexGrow: 1 }}>          
           <Grid container spacing={3}>
 
+            {/* Nombre - Fecha entrada - Fecha nacimiento */}
             <Grid size={4}>
               <TextField label="Nombre" name="name"  sx={{ width: 250 }}
                 value={tempAnimal.nombre} onChange={e => handleChange('nombre', e.target.value)} 
@@ -92,6 +97,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
               />
             </Grid>
 
+            {/* Chip - Nº registro - Sexo */}
             <Grid size={4}>
               <TextField label="Chip" name="chip"  sx={{ minWidth: 250 }} 
                 value={tempAnimal.chip} onChange={e => handleChange('chip', e.target.value)} 
@@ -113,6 +119,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
               </FormControl>
             </Grid>
 
+            {/* Raza - Color - Origen */}
             <Grid size={4}>
               <TextField label="Raza"  name="raza" sx={{ width: 250 }} 
                 value={tempAnimal.raza} onChange={e => handleChange('raza', e.target.value)} 
@@ -129,6 +136,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
               />
             </Grid>
 
+            {/* Estado - Fecha estado */}
             <Grid size={4}>
               <FormControl sx={{ width: 250 }}>
                 <InputLabel id="cambiar-estado-label" sx={{ color: 'primary.main' }}>Cambiar estado</InputLabel>
@@ -171,6 +179,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
             </Grid>
             <Grid size={4} />
 
+            {/* Localizacion - Fecha localizacion */}
             <Grid size={4}>
               <FormControl sx={{ width: 250 }}>
                 <InputLabel id="cambiar-localizacion-label" sx={{ color: 'success.main' }}>Cambiar localización</InputLabel>
@@ -185,8 +194,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
                     '& fieldset': { borderColor: 'success.main' }
                   }}              
                 >
-                  {(isGato ? localizacionGatosOptions : localizacionPerrosOptions).map(opt => (
-                    <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
+                  {(isGato ? localizacionesGato : localizacionesPerro).map(opt => (
+                    <MenuItem key={opt.id ?? '-'} value={opt.id}>{opt.nombre}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -213,6 +222,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
             </Grid>
             <Grid size={4} />            
 
+            {/* Enfermedades cronicas */}
             <Grid size={12}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 2 }}>
                 <Typography>
@@ -245,6 +255,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
               </Box>            
             </Grid>
 
+            {/* Antecedentes */}
             <Grid size={12}>
               <TextField
                 label="Antecedentes"
