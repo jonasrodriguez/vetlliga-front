@@ -13,6 +13,7 @@ const HomePage = lazy(() => import('./pages/HomePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const AnimalListPage = lazy(() => import('./pages/AnimalListPage'));
 const DetallesAnimal = lazy(() => import('./pages/DetallesAnimal'));
+const ConfigPage = lazy(() => import('./pages/ConfigPage'));
 
 const ProtectedRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
   const { auth } = useAuthStore();
@@ -45,6 +46,7 @@ const App: React.FC = () => {
               <Route path="perros/:estado?" element={<AnimalListPage type={AnimalType.PERROS} />} />
               <Route path="gatos/:estado?" element={<AnimalListPage type={AnimalType.GATOS} />} />
               <Route path="ficha/:id?" element={<DetallesAnimal />} />
+              <Route path="configuracion" element={<ConfigPage />} />
             </Route>
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

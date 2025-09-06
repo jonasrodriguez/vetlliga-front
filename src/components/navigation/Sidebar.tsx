@@ -79,6 +79,13 @@ function Sidebar({ drawerWidth }: SidebarProps) {
           Recordatorios
         </Typography>
       </ListItemButton>
+            <Divider sx={{ marginBottom: '8px' }} />
+      {/* Configuracion Section */}
+      <ListItemButton component={RouterLink} to="/configuracion" sx={{ pl: 2 }}>
+        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+          Configuración
+        </Typography>
+      </ListItemButton>
     </Paper>
   );
 }
