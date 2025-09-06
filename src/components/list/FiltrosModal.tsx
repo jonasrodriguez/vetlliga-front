@@ -4,9 +4,11 @@ import { es } from 'date-fns/locale';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { AnimalType } from '../../enums/AnimalType';
-import { useAnimalFilterStore } from '../../stores/AnimalFilterStore';
 import { AnimalCriteria } from '../../models/AnimalCriteria';
-import { estadoFiltroOptions, localizacionPerrosFiltroOptions, localizacionGatosFiltroOptions } from '../../constants/animalOptions';
+import { estadoFiltroOptions } from '../../constants/animalOptions';
+
+import { useAnimalFilterStore } from '../../stores/AnimalFilterStore';
+import useConfigStore from '../../stores/ConfigStore';
 
 interface AnimalListFiltrosModalProps {
   type: AnimalType;
@@ -16,7 +18,10 @@ interface AnimalListFiltrosModalProps {
 
 const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen, type, onClose }) => {
   const { filters, setFilters, resetFilters } = useAnimalFilterStore();
+  const { localizacionesGato, localizacionesPerro } = useConfigStore();
   const [tempFilter, setTempFilter] = useState<AnimalCriteria>({ ...filters });
+
+  const isGato = type === AnimalType.GATOS;
 
   const applyFilters = () => {
     setFilters(tempFilter);
@@ -35,13 +40,6 @@ const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen,
     });
   };
 
-  const renderMenuItems = ( options: { value: string | number | undefined; label: string }[]) => [
-    <MenuItem key="-" value={undefined}>-</MenuItem>,
-    ...options.map(opt => (
-      <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
-    )),
-  ];
-
   const estadoFiltro = (
     <Box sx={{ display: 'flex', gap: 2 }}>
       <FormControl fullWidth>
@@ -52,7 +50,10 @@ const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen,
           value={tempFilter.estado !== undefined ? tempFilter.estado : ''}
           onChange={(e) => setTempFilter({ ...tempFilter, estado: e.target.value ? Number(e.target.value) : undefined})}
         >
-          {renderMenuItems(estadoFiltroOptions)}
+          <MenuItem key="-" value={undefined}>-</MenuItem>,
+          {estadoFiltroOptions.map(opt => (
+            <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
+          ))}
         </Select>
       </FormControl>
 
@@ -80,9 +81,10 @@ const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen,
           value={tempFilter.localizacion ?? ''}
           onChange={(e) => setTempFilter({ ...tempFilter, localizacion: e.target.value ? Number(e.target.value) : undefined }) }
         >
-          {type === AnimalType.GATOS
-            ? renderMenuItems(localizacionGatosFiltroOptions)
-            : renderMenuItems(localizacionPerrosFiltroOptions)}
+          <MenuItem key="-" value={undefined}>-</MenuItem>,
+          {(isGato ? localizacionesGato : localizacionesPerro).map(opt => (
+            <MenuItem key={opt.id ?? '-'} value={opt.id}>{opt.nombre}</MenuItem>
+          ))}
         </Select>
       </FormControl>
 

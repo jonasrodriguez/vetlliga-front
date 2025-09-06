@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Chip, Typography } from '@mui/material';
-import { useAnimalFilterStore } from '../../stores/AnimalFilterStore';
 import formatMonthDate from '../../utils/formatMonthDate';
-import { estadoFiltroOptions, localizacionGatosFiltroOptions, localizacionPerrosFiltroOptions } from '../../constants/animalOptions';
+import { estadoFiltroOptions } from '../../constants/animalOptions';
+
+import { useAnimalFilterStore } from '../../stores/AnimalFilterStore';
+import useConfigStore from '../../stores/ConfigStore';
 
 const FiltrosDescripcion: React.FC = () => {
 
   const { filters, removeFilter } = useAnimalFilterStore();
+  const { config } = useConfigStore();
+
   const [filterList, setFilterList] = useState<{ label: string; value: string; }[]>([]);
   const isGatos = filters.tipo === 'G';
 
@@ -24,11 +28,10 @@ const FiltrosDescripcion: React.FC = () => {
         value: `Fecha estado: ${formatMonthDate(filters.fechaEstado)}` });
     }
     if (filters.localizacion !== undefined) {
+      const loc = config?.localizaciones?.find(l => l.id === filters.localizacion);
       newFilterList.push({ 
         label: 'localizacion', 
-        value: `Localización: ${isGatos 
-          ? localizacionGatosFiltroOptions[filters.localizacion].label 
-          : localizacionPerrosFiltroOptions[filters.localizacion].label}` 
+        value: `Localización: ${loc?.nombre}` 
       });
     }
     if (filters.fechaLocalizacion) {
