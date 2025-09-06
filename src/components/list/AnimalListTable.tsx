@@ -55,7 +55,7 @@ const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals }) => {
                 <EstadoChip estado={animal.estado} />
               </TableCell>
               <TableCell>
-                <LocalizacionChip localizacion={animal.localizacion} tipo={animal.tipo} />
+                <LocalizacionChip localizacion={animal.localizacion} />
               </TableCell>                   
               <TableCell>{animal.numeroRegistro}</TableCell>
               <TableCell>{sexoLiterales(animal.sexo)}</TableCell>

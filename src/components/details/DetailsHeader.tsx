@@ -74,7 +74,7 @@ const DetailsHeader: React.FC<PersonalInfoProps> = ({ animal }) => {
           <Typography variant="subtitle1">
             desde el {formatDate(animal.fechaEstado)} | 
           </Typography>
-          <LocalizacionChip localizacion={animal.localizacion} tipo={animal.tipo} />
+          <LocalizacionChip localizacion={animal.localizacion} />
           <Typography variant="subtitle1">
             desde el {formatDate(animal.fechaLocalizacion)}
           </Typography>

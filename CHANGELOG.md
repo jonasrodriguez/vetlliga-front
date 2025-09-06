@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.0] - 2025-08-30
+### Added
+- New estado "Propietario" for both types of animals
+
+### Changed
+- Localizacion is now dynamic and can be set by the user
+
+### Fixed
+- Fix errors with animal list filters data fields
+
+---
+
 ## [1.3.0] - 2025-08-28
 ### Added
 - Added global notification snackbar
