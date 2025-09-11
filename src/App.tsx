@@ -46,7 +46,7 @@ const App: React.FC = () => {
               <Route path="perros/:estado?" element={<AnimalListPage type={AnimalType.PERROS} />} />
               <Route path="gatos/:estado?" element={<AnimalListPage type={AnimalType.GATOS} />} />
               <Route path="ficha/:id?" element={<DetallesAnimal />} />
-              <Route path="configuracion" element={<ConfigPage />} />
+              <Route path="configuracion/:tipo?" element={<ConfigPage />} />
             </Route>
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
