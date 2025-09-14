@@ -29,3 +29,40 @@ export const fetchUsers = async (): Promise<Usuario[]> => {
   const data = await response.json();
   return Promise.resolve(data);
 };
+
+export const createUser = async (user: Partial<Usuario>): Promise<Usuario> => {
+  user.id = undefined;
+  user.username = user.username?.toLowerCase() || '';
+  const response = await authFetch(`${API_BASE_URL}/usuarios`, {
+    method: 'POST',
+    body: JSON.stringify(user),
+  });
+  if (!response.ok) {
+    return Promise.reject('Failed to create user');
+  }
+  const data = await response.json();
+  return Promise.resolve(data);
+};
+
+export const updateUserPassword = async (userId: number, newPassword: string): Promise<void> => {
+  const response = await authFetch(`${API_BASE_URL}/usuarios/${userId}/password`, {
+    method: 'PUT',
+    body: JSON.stringify({ password: newPassword }),
+  });
+  if (!response.ok) {
+    return Promise.reject('Failed to update password');
+  }
+  
+  return Promise.resolve();
+};
+
+export const deleteUser = async (userId: number): Promise<void> => {
+  const response = await authFetch(`${API_BASE_URL}/usuarios/${userId}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    return Promise.reject('Failed to delete user');
+  }
+
+  return Promise.resolve();
+}

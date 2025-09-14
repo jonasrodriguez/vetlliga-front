@@ -1,4 +1,9 @@
 export enum Rol {
-  ADMIN = "Admin",
-  USUARIO = "Usuario"
+  ADMIN = "ADMIN",
+  USUARIO = "USUARIO"
 }
+
+export const RolDisplay: Record<Rol, string> = {
+  [Rol.ADMIN]: "Admin",
+  [Rol.USUARIO]: "Usuario",
+};
