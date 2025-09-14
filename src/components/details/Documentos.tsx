@@ -9,6 +9,7 @@ import formatDate from '../../utils/formatDate';
 import DeleteConfirmation from '../shared/DeleteConfirmation';
 
 import useAnimalStore from '../../stores/AnimalStore';
+import { useAuthStore } from '../../stores/AuthStore';
 
 interface DocumentosProps {
   animal: AnimalDto;
@@ -17,6 +18,7 @@ interface DocumentosProps {
 const Documentos: React.FC<DocumentosProps> = ({ animal }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [deletion, setDeletion] = useState<number | null>(null);
+  const isAdmin = useAuthStore((state) => state.isAdmin());
   
   const handleAdd = () => {
     setModalOpen(true);
@@ -47,7 +49,7 @@ const Documentos: React.FC<DocumentosProps> = ({ animal }) => {
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'space-between', gap: 2 }}>
         <Typography variant="h6"> Documentos Adjuntos</Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={handleAdd}>        
+        <Button variant="contained" startIcon={<Add />} onClick={handleAdd} disabled={!isAdmin}>        
           Subir nuevo documento
         </Button>
       </Box>

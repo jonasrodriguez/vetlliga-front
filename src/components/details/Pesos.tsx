@@ -8,6 +8,7 @@ import * as PesosService from '../../services/PesosService';
 import formatDate from '../../utils/formatDate';
 
 import useAnimalStore from '../../stores/AnimalStore';
+import { useAuthStore } from '../../stores/AuthStore';
 
 interface PesosProps {
   animal: AnimalDto;
@@ -16,6 +17,7 @@ interface PesosProps {
 const Pesos: React.FC<PesosProps> = ({ animal }) => {
   const [currentPeso, setCurrentPeso] = useState<PesoDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const isAdmin = useAuthStore((state) => state.isAdmin());
 
   const handleAdd = () => {
     setCurrentPeso(null);
@@ -48,7 +50,7 @@ const Pesos: React.FC<PesosProps> = ({ animal }) => {
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'space-between', gap: 2 }}>
         <Typography variant="h6"> Pesos</Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={handleAdd}>        
+        <Button variant="contained" startIcon={<Add />} onClick={handleAdd} disabled={!isAdmin}>        
           Nuevo Peso
         </Button>
       </Box>

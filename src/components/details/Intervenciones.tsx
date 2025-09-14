@@ -8,6 +8,7 @@ import IntervencionModal from './modals/IntervencionModal';
 import formatDate from '../../utils/formatDate';
 
 import useAnimalStore from '../../stores/AnimalStore';
+import { useAuthStore } from '../../stores/AuthStore';
 
 interface IntervencionProps {
   animal: AnimalDto;
@@ -16,7 +17,7 @@ interface IntervencionProps {
 const Intervenciones: React.FC<IntervencionProps> = ({ animal }) => {
   const [currentEntry, setCurrentEntry] = useState<IntervencionDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-
+  const isAdmin = useAuthStore((state) => state.isAdmin());
   const handleAdd = () => {
     setCurrentEntry(null);
     setModalOpen(true);
@@ -48,7 +49,7 @@ const Intervenciones: React.FC<IntervencionProps> = ({ animal }) => {
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'space-between', gap: 2 }}>
         <Typography variant="h6"> Intervenciones Quirurgicas</Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={handleAdd}>        
+        <Button variant="contained" startIcon={<Add />} onClick={handleAdd} disabled={!isAdmin}>        
           Nueva Intervención
         </Button>
       </Box>

@@ -8,6 +8,7 @@ interface AuthState {
   clearAuth: () => void;
   login: (data: Omit<Auth, 'isAuthenticated'>) => void;
   logout: () => void;
+  isAdmin: () => boolean;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -18,6 +19,7 @@ export const useAuthStore = create<AuthState>()(
       clearAuth: () => set({ auth: initialAuth }),
       login: (data: Omit<Auth, 'isAuthenticated'>) => set({ auth: { ...data, isAuthenticated: true } }),
       logout: () => get().clearAuth(),
+      isAdmin: () => get().auth.role === 'ADMIN',
     }),
     {
       name: 'auth-storage',

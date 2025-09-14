@@ -14,6 +14,7 @@ import { sexoOptions, estadoOptions } from '../../constants/animalOptions';
 
 import useNotificationStore from '../../stores/NotificationStore';
 import useConfigStore from '../../stores/ConfigStore';
+import { useAuthStore } from '../../stores/AuthStore';
 
 interface PersonalInfoProps {
   animal: AnimalDto;
@@ -24,6 +25,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
   const [tempAnimal, setTempAnimal] = useState<AnimalDto>({ ...animal });
   const [enfermedad, setEnfermedad] = useState('');
   const isGato = tempAnimal.tipo === 'GATO';
+  const isAdmin = useAuthStore((state) => state.isAdmin());
 
   const { localizacionesGato, localizacionesPerro } = useConfigStore();
 
@@ -270,7 +272,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
           </Grid>   
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-          <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSave}>
+          <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSave} disabled={!isAdmin}>
             Guardar cambios
           </Button>
         </Box>    

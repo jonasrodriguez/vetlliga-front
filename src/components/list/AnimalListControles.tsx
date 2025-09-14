@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, InputAdornment, IconButton } from '@mui/material';
 import { Add, Search, SaveAlt, FilterList } from '@mui/icons-material';
+
 import { AnimalType } from '../../enums/AnimalType';
 import AnimalListFiltrosModal from './FiltrosModal';
+
 import { useAnimalFilterStore } from '../../stores/AnimalFilterStore';
+import { useAuthStore } from '../../stores/AuthStore';
 
 interface ListadoFiltrosProps {
   type: AnimalType;
@@ -12,8 +15,10 @@ interface ListadoFiltrosProps {
 }
 
 const AnimalListControles: React.FC<ListadoFiltrosProps> = ({ type, onAddClick, onExcelClick }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { filters, setFilter } = useAnimalFilterStore();
+  const isAdmin = useAuthStore((state) => state.isAdmin());
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(filters.search || '');
 
   const handleSearchClick = () => {
@@ -79,7 +84,7 @@ const AnimalListControles: React.FC<ListadoFiltrosProps> = ({ type, onAddClick, 
         <Button variant="contained" color="success" onClick={onExcelClick} startIcon={<SaveAlt />} >
           Descargar Datos
         </Button>
-        <Button variant="contained" color="success" onClick={onAddClick} startIcon={<Add />} >
+        <Button variant="contained" color="success" onClick={onAddClick} startIcon={<Add />} disabled={!isAdmin} >
           Alta {type === AnimalType.GATOS ? 'Gato' : 'Perro'}
         </Button>
       </Box>

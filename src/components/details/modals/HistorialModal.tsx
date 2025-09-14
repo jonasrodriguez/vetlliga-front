@@ -5,9 +5,12 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { es } from 'date-fns/locale';
 import { Close, Add, Edit } from "@mui/icons-material";
+
 import { HistorialDto, initialHistorial } from "../../../models/AnimalDto";
 import DeleteConfirmation from "../../shared/DeleteConfirmation";
 import formatDate from '../../../utils/formatDate';
+
+import { useAuthStore } from '../../../stores/AuthStore';
 
 type ModalProps = {
   open: boolean;
@@ -40,6 +43,7 @@ const HistorialModal: React.FC<ModalProps> = ({ open, onClose, onSave, onDelete,
   const [toggleEdit, setToggleEdit] = useState<number | undefined>(undefined);
   const [formData, setFormData] = useState<HistorialDto>(initialHistorial);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const isAdmin = useAuthStore((state) => state.isAdmin());
 
   const handleChange = (field: keyof HistorialDto) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -141,7 +145,7 @@ const HistorialModal: React.FC<ModalProps> = ({ open, onClose, onSave, onDelete,
             Historial Médico de {name}
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Button startIcon={<Add />} variant="contained" color="primary" onClick={onNewEntry}>
+            <Button startIcon={<Add />} variant="contained" color="primary" onClick={onNewEntry} disabled={!isAdmin}>
               Nueva entrada
             </Button>
             <IconButton onClick={closingModal}>
@@ -166,10 +170,10 @@ const HistorialModal: React.FC<ModalProps> = ({ open, onClose, onSave, onDelete,
                   {formatDate(entry.fecha)}
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
-                <IconButton onClick={() => onEdit(entry)}>
+                <IconButton onClick={() => onEdit(entry)} disabled={!isAdmin}>
                   <Edit />
                 </IconButton>
-                <IconButton onClick={() => onDeleteClick(entry)}>
+                <IconButton onClick={() => onDeleteClick(entry)} disabled={!isAdmin}>
                   <Close />
                 </IconButton>
               </Box>              

@@ -8,6 +8,7 @@ import * as VacunasService from '../../services/VacunasService';
 import VacunasModal from './modals/VacunasModal';
 
 import useAnimalStore from '../../stores/AnimalStore';
+import { useAuthStore } from '../../stores/AuthStore';
 
 interface VacunacionProps {
   animal: AnimalDto;
@@ -16,6 +17,7 @@ interface VacunacionProps {
 const Vacunas: React.FC<VacunacionProps> = ({ animal }) => {
   const [currentVacunacion, setCurrentVacunacion] = useState<VacunacionDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const isAdmin = useAuthStore((state) => state.isAdmin());
 
   const handleAdd = () => {
     setCurrentVacunacion(null);
@@ -48,7 +50,7 @@ const Vacunas: React.FC<VacunacionProps> = ({ animal }) => {
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'space-between', gap: 2 }}>
         <Typography variant="h6"> Vacunaciones</Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={handleAdd}>        
+        <Button variant="contained" startIcon={<Add />} onClick={handleAdd} disabled={!isAdmin}>        
           Nueva Vacunación
         </Button>
       </Box>

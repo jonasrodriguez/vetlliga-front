@@ -8,6 +8,7 @@ import DesparasitacionesModal from './modals/DesparasitacionesModal';
 import formatDate from '../../utils/formatDate';
 
 import useAnimalStore from '../../stores/AnimalStore';
+import { useAuthStore } from '../../stores/AuthStore';
 
 interface DesparasitacionesProps {
   animal: AnimalDto;
@@ -17,6 +18,7 @@ interface DesparasitacionesProps {
 const Desparasitaciones: React.FC<DesparasitacionesProps> = ({ animal, type }) => {
   const [currentEntry, setCurrentEntry] = useState<DesparasitacionDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const isAdmin = useAuthStore((state) => state.isAdmin());
 
   const handleAdd = () => {
     setCurrentEntry(null);
@@ -49,7 +51,7 @@ const Desparasitaciones: React.FC<DesparasitacionesProps> = ({ animal, type }) =
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'space-between', gap: 2 }}>
         <Typography variant="h6"> Desparasitación {type}</Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={handleAdd}>        
+        <Button variant="contained" startIcon={<Add />} onClick={handleAdd} disabled={!isAdmin}>
           Nueva Desparasitación {type}
         </Button>
       </Box>

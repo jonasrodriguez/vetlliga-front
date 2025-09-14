@@ -13,6 +13,8 @@ import calculoEdad from '../../utils/calculoEdad';
 import { sexoLiterales } from '../../enums/SexoAnimal';
 
 import * as animalService from '../../services/AnimalService';
+import { useAuthStore } from '../../stores/AuthStore';
+
 
 interface PersonalInfoProps {
   animal: AnimalDto;
@@ -23,6 +25,7 @@ const DetailsHeader: React.FC<PersonalInfoProps> = ({ animal }) => {
   const navigate = useNavigate();
   const edad = calculoEdad(animal.fechaNacimiento);
   const Sexo = sexoLiterales(animal.sexo);
+  const isAdmin = useAuthStore((state) => state.isAdmin());
 
   const isGato = animal.tipo === 'GATO';
   const imageNum = animal.id % 5;
@@ -61,6 +64,7 @@ const DetailsHeader: React.FC<PersonalInfoProps> = ({ animal }) => {
                 boxShadow: '0px 4px 20px 0px rgba(211,47,47,0.2)',
               },
             }}
+            disabled={!isAdmin}
           >
             Borrar
           </Button>

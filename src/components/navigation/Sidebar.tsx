@@ -1,11 +1,14 @@
 import { List, Typography, ListItemButton, Paper, Divider } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
+import { useAuthStore } from '../../stores/AuthStore';
+
 type SidebarProps = {
   drawerWidth: number;
 };
 
 function Sidebar({ drawerWidth }: SidebarProps) {
+  const isAdmin = useAuthStore((state) => state.isAdmin());
 
   return (
     <Paper
@@ -79,19 +82,24 @@ function Sidebar({ drawerWidth }: SidebarProps) {
           Recordatorios
         </Typography>
       </ListItemButton>
-      <Divider sx={{ marginBottom: '8px' }} />
       {/* Configuracion Section */}
-      <ListItemButton sx={{ pl: 2 }}>
-        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-          Configuración
-        </Typography>
-      </ListItemButton>
-      <ListItemButton component={RouterLink} to="/configuracion/usuarios" sx={{ pl: 4 }}>
-        <Typography variant="body2">Usuarios</Typography>
-      </ListItemButton>        
-      <ListItemButton component={RouterLink} to="/configuracion/localizaciones" sx={{ pl: 4 }}>
-        <Typography variant="body2">Localizaciones</Typography>
-      </ListItemButton>    
+      {isAdmin && (
+        <>
+          <Divider sx={{ marginBottom: '8px' }} />
+          {/* Configuracion Section */}
+          <ListItemButton sx={{ pl: 2 }}>
+            <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+              Configuración
+            </Typography>
+          </ListItemButton>
+          <ListItemButton component={RouterLink} to="/configuracion/usuarios" sx={{ pl: 4 }}>
+            <Typography variant="body2">Usuarios</Typography>
+          </ListItemButton>
+          <ListItemButton component={RouterLink} to="/configuracion/localizaciones" sx={{ pl: 4 }}>
+            <Typography variant="body2">Localizaciones</Typography>
+          </ListItemButton>
+        </>
+      )}  
     </Paper>
   );
 }

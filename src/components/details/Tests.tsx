@@ -8,6 +8,7 @@ import * as TestService from '../../services/TestsService';
 import formatDate from '../../utils/formatDate';
 
 import useAnimalStore from '../../stores/AnimalStore';
+import { useAuthStore } from '../../stores/AuthStore';
 
 interface TestsProps {
   animal: AnimalDto;
@@ -16,6 +17,7 @@ interface TestsProps {
 const Tests: React.FC<TestsProps> = ({ animal }) => {
   const [currentEntry, setCurrentEntry] = useState<TestDto | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const isAdmin = useAuthStore((state) => state.isAdmin());
 
   const handleAdd = () => {
     setCurrentEntry(null);
@@ -48,7 +50,7 @@ const Tests: React.FC<TestsProps> = ({ animal }) => {
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'space-between', gap: 2 }}>
         <Typography variant="h6"> Tests y Pruebas Especificas</Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={handleAdd}>        
+        <Button variant="contained" startIcon={<Add />} onClick={handleAdd} disabled={!isAdmin}>        
           Nuevo Test
         </Button>
       </Box>
