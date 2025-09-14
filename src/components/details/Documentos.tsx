@@ -93,7 +93,7 @@ const Documentos: React.FC<DocumentosProps> = ({ animal }) => {
             <Typography variant="body2">{entry.descripcion}</Typography>
           </Grid>          
           <Grid size={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <IconButton size="small" onClick={() => entry.id ? handleDeleteClick(entry.id) : null}>
+            <IconButton size="small" onClick={() => entry.id ? handleDeleteClick(entry.id) : null} disabled={!isAdmin}>
               <Delete fontSize="small" />
             </IconButton>
           </Grid>

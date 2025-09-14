@@ -82,7 +82,7 @@ const Vacunas: React.FC<VacunacionProps> = ({ animal }) => {
             <Typography variant="body2">{entry.producto}</Typography>
           </Grid>
           <Grid size={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <IconButton onClick={() => handleEdit(entry)} size="small">
+            <IconButton onClick={() => handleEdit(entry)} size="small" disabled={!isAdmin}>
               <Edit fontSize="small" />
             </IconButton>
           </Grid>
