@@ -20,9 +20,12 @@ function Sidebar({ drawerWidth }: SidebarProps) {
         padding: '2px',
       }}
     >
-      <Typography variant="h6" gutterBottom sx={{ padding: '8px' }}>
-        Menú
-      </Typography>
+
+      <ListItemButton component={RouterLink} to="/" sx={{ pl: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+          Menú
+        </Typography>
+      </ListItemButton>
       <Divider sx={{ marginBottom: '8px' }} />
       <List>
         {/* Perros Section */}
