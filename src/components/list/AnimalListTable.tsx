@@ -37,16 +37,17 @@ const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals }) => {
   }
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} elevation={5}>
       <Table>
         <AnimalTableHeaders/>
         <TableBody>
-          {animals.map((animal) => (
+          {animals.map((animal, key) => (
             <TableRow key={animal.id} onClick={() => handleRowClick(animal.id)}
               sx={{
                 cursor: 'pointer',
+                backgroundColor: key % 2 === 0 ? 'rgba(0, 0, 0, 0.05)' : 'inherit', // Alternating row colors
                 '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)', // Slightly darker background on hover
+                  backgroundColor: 'rgba(0, 0, 0, 0.15)', // Slightly darker background on hover
                 },
               }}
             >
@@ -68,7 +69,7 @@ const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals }) => {
               {/* Boton historial */}
               <TableCell  onClick={(e) => e.stopPropagation()} >
                 <Tooltip title="Mostrar historial">
-                  <IconButton onClick={() => handleHistorialClick(animal.id)}>
+                  <IconButton onClick={() => handleHistorialClick(animal.id)} size="small">
                     <SummarizeIcon color="primary" />
                   </IconButton>
                 </Tooltip>
