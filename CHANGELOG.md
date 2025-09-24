@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.1] - 2025-09-24
+### Changed
+- Darker background color on odd row numbers
+- Smaller size for shortcut to animal historial
+
+---
+
 ## [1.5.0] - 2025-09-14
 ### Added
 - New user list component
