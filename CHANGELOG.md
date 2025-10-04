@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.2] - 2025-10-04
+### Changed
+- Show frontend version on tooltip
+- Main menu click with take you to home screen
+- Refactor DatePickers and ComboBoxes to make them reusable
+
+### Fixed
+- Added a catch on datetime format function
+- Document upload modal will show a proper error
+- Fix weird behavior when adding dates manually on date picker
+
+---
+
 ## [1.5.1] - 2025-09-24
 ### Changed
 - Darker background color on odd row numbers
