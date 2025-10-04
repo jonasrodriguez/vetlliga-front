@@ -83,7 +83,7 @@ const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen,
         >
           <MenuItem key="-" value={undefined}>-</MenuItem>,
           {(isGato ? localizacionesGato : localizacionesPerro).map(opt => (
-            <MenuItem key={opt.id ?? '-'} value={opt.id}>{opt.nombre}</MenuItem>
+            <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
           ))}
         </Select>
       </FormControl>

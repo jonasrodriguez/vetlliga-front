@@ -3,7 +3,6 @@ import { Box, Typography, Paper, Grid, IconButton, Button, TextField, Divider } 
 import { Save, Delete } from '@mui/icons-material';
 
 import { AnimalType, getAnimalType, getAnimalTypeLabel } from '../../enums/AnimalType';
-import { Localizacion } from '../../models/Localizacion';
 import { addLocalizacion, deleteLocalizacion } from '../../services/ConfigService';
 
 import useConfigStore from '../../stores/ConfigStore';
@@ -18,7 +17,7 @@ const LocalizacionesConfig: React.FC<LocalizacionesConfigProps> = ({ type }) => 
   const [newName, setNewName] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const localizaciones: Localizacion[] = type === AnimalType.GATOS ? localizacionesGato : localizacionesPerro;
+  const localizaciones = type === AnimalType.GATOS ? localizacionesGato : localizacionesPerro;
   const tipoAnimal = getAnimalTypeLabel(type);
 
   const handleAdd = async () => {
@@ -54,12 +53,12 @@ const LocalizacionesConfig: React.FC<LocalizacionesConfigProps> = ({ type }) => 
       </Typography>
       <Divider />
       {localizaciones.map((loc) => (
-        <Grid container spacing={2} key={loc.id} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
+        <Grid container spacing={2} key={loc.value} sx={{ borderBottom: '1px solid #eee', py: 1 }}>
           <Grid size={10}>
-            <Typography variant="body2">{loc.nombre}</Typography>
+            <Typography variant="body2">{loc.label}</Typography>
           </Grid>
           <Grid size={2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <IconButton onClick={() => handleDelete(loc.id)} size="small" disabled={saving}>
+            <IconButton onClick={() => handleDelete(loc.value)} size="small" disabled={saving}>
               <Delete fontSize="small" />
             </IconButton>
           </Grid>
