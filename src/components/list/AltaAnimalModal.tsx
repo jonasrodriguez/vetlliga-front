@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Typography, Box, TextField, Grid, Select, MenuItem, InputLabel, FormControl, IconButton, Button } from '@mui/material';
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { es } from 'date-fns/locale';
 import CloseIcon from '@mui/icons-material/Close';
 
 import { AnimalDto, initialAnimal } from '../../models/AnimalDto';
 import { sexoOptions, estadoOptions } from '../../constants/animalOptions';
 import ListadoChips from '../shared/ListadoChips';
+import AnimalDatePicker from '../shared/AnimalDatePicker';
 
 import useAnimalStore from '../../stores/AnimalStore';
 import useConfigStore from '../../stores/ConfigStore';
@@ -47,15 +44,6 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, type, onClose, 
     }));
   };
 
-  const handleDateChange = (field: keyof AnimalDto) => (newDate: Date | null) => {
-    handleChange(field, newDate ? newDate.toISOString().split('T')[0] : '');
-  };
-
-  const handleFechaEntradaChange = handleDateChange('fechaEntrada');
-  const handleFechaNacimientoChange = handleDateChange('fechaNacimiento');
-  const handleFechaEstadoChange = handleDateChange('fechaEstado');
-  const handleFechaLocalizacionChange = handleDateChange('fechaLocalizacion');
-
   const handleSave = async () => {
     setSaving(true);
     if (!tempAnimal.sexo || !tempAnimal.estado || !tempAnimal.localizacion) {
@@ -90,152 +78,151 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, type, onClose, 
   };
 
   const content = (
-    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexGrow: 1 }}>
-          <Grid container spacing={3}>
+    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexGrow: 1 }}>
+      <Grid container spacing={3}>
 
-            {/* Nombre - Entrada - Edad */}
-            <Grid size={4}>
-              <TextField label="Nombre" name="nombre" sx={{ width: 250 }}
-                value={tempAnimal.nombre} onChange={e => handleChange('nombre', e.target.value)}
-              />
-            </Grid>
-            <Grid size={4}>
-              <DatePicker
-                label="Fecha de entrada"
-                value={tempAnimal.fechaEntrada ? new Date(tempAnimal.fechaEntrada) : null}
-                onChange={handleFechaEntradaChange}
-                sx={{ width: 250 }}
-              />
-            </Grid>
-            <Grid size={4}>
-              <DatePicker
-                label="Fecha de nacimiento"
-                value={tempAnimal.fechaNacimiento ? new Date(tempAnimal.fechaNacimiento) : null}
-                onChange={handleFechaNacimientoChange}
-                sx={{ width: 250 }}
-              />
-            </Grid>
+        {/* Nombre - Entrada - Edad */}
+        <Grid size={4}>
+          <TextField label="Nombre" name="nombre" sx={{ width: 250 }}
+            value={tempAnimal.nombre} onChange={e => handleChange('nombre', e.target.value)}
+          />
+        </Grid>
+        <Grid size={4}>
+          <AnimalDatePicker
+            label="Fecha de entrada"
+            value={tempAnimal.fechaEntrada}
+            onChange={(newDate) => handleChange("fechaEntrada", newDate)}
+          />
+        </Grid>
+        <Grid size={4}>
+          <AnimalDatePicker
+            label="Fecha de nacimiento"
+            value={tempAnimal.fechaNacimiento}
+            onChange={(newDate) => handleChange("fechaNacimiento", newDate)}
+          />
+        </Grid>
 
-            {/* Nº Registro - Chip - Sexo */}
-            <Grid size={4}>
-              <TextField label="Nº Registro" name="numeroRegistro" sx={{ minWidth: 250 }}
-                value={tempAnimal.numeroRegistro} onChange={e => handleChange('numeroRegistro', e.target.value)}
-              />
-            </Grid>
-            <Grid size={4}>
-              <TextField label="Nº Chip" name="chip" sx={{ minWidth: 250 }}
-                value={tempAnimal.chip} onChange={e => handleChange('chip', e.target.value)}
-              />
-            </Grid>
-            <Grid size={4}>
-              <FormControl sx={{ width: 250 }} >
-                <InputLabel id="sexo-label">Sexo</InputLabel>
-                <Select
-                  labelId="sexo-label"
-                  label="Sexo"
-                  value={tempAnimal.sexo}
-                  onChange={e => handleChange('sexo', e.target.value)}
-                >
-                  {sexoOptions.map(opt => (
-                    <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+        {/* Nº Registro - Chip - Sexo */}
+        <Grid size={4}>
+          <TextField label="Nº Registro" name="numeroRegistro" sx={{ minWidth: 250 }}
+            value={tempAnimal.numeroRegistro} onChange={e => handleChange('numeroRegistro', e.target.value)}
+          />
+        </Grid>
+        <Grid size={4}>
+          <TextField label="Nº Chip" name="chip" sx={{ minWidth: 250 }}
+            value={tempAnimal.chip} onChange={e => handleChange('chip', e.target.value)}
+          />
+        </Grid>
+        <Grid size={4}>
+          <FormControl sx={{ width: 250 }} >
+            <InputLabel id="sexo-label">Sexo</InputLabel>
+            <Select
+              labelId="sexo-label"
+              label="Sexo"
+              value={tempAnimal.sexo}
+              onChange={e => handleChange('sexo', e.target.value)}
+            >
+              {sexoOptions.map(opt => (
+                <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
 
-            {/* Raza - Color - Origen */}
-            <Grid size={4}>
-              <TextField label="Raza" name="raza" sx={{ width: 250 }}
-                value={tempAnimal.raza} onChange={e => handleChange('raza', e.target.value)}
-              />
-            </Grid>
-            <Grid size={4}>
-              <TextField label="Color" name="color" sx={{ width: 250 }}
-                value={tempAnimal.color} onChange={e => handleChange('color', e.target.value)}
-              />
-            </Grid>
-            <Grid size={4}>
-              <TextField label="Origen" name="origen" sx={{ width: 250 }}
-                value={tempAnimal.origen} onChange={e => handleChange('origen', e.target.value)}
-              />
-            </Grid>
+        {/* Raza - Color - Origen */}
+        <Grid size={4}>
+          <TextField label="Raza" name="raza" sx={{ width: 250 }}
+            value={tempAnimal.raza} onChange={e => handleChange('raza', e.target.value)}
+          />
+        </Grid>
+        <Grid size={4}>
+          <TextField label="Color" name="color" sx={{ width: 250 }}
+            value={tempAnimal.color} onChange={e => handleChange('color', e.target.value)}
+          />
+        </Grid>
+        <Grid size={4}>
+          <TextField label="Origen" name="origen" sx={{ width: 250 }}
+            value={tempAnimal.origen} onChange={e => handleChange('origen', e.target.value)}
+          />
+        </Grid>
 
-            {/* Estado */}
-            <Grid size={4}>
-              <FormControl sx={{ width: 250 }}>
-                <InputLabel id="cambiar-estado-label">Cambiar estado</InputLabel>
-                <Select
-                  labelId="cambiar-estado-label"
-                  label="Cambiar estado"
-                  value={tempAnimal.estado}
-                  onChange={e => handleChange('estado', e.target.value)}
-                >
-                  {estadoOptions.map(opt => (
-                    <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid size={4}>
-              <DatePicker
-                label="Fecha de estado"
-                value={tempAnimal.fechaEstado ? new Date(tempAnimal.fechaEstado) : null}
-                onChange={handleFechaEstadoChange}
-                sx={{ width: 250 }}
-              />
-            </Grid>
-            <Grid size={4} />
+        {/* Estado */}
+        <Grid size={4}>
+          <FormControl sx={{ width: 250 }}>
+            <InputLabel id="cambiar-estado-label">Cambiar estado</InputLabel>
+            <Select
+              labelId="cambiar-estado-label"
+              label="Cambiar estado"
+              value={tempAnimal.estado}
+              onChange={e => handleChange('estado', e.target.value)}
+            >
+              {estadoOptions.map(opt => (
+                <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid size={4}>
+          <AnimalDatePicker
+            label="Fecha de estado"
+            value={tempAnimal.fechaEstado}
+            onChange={(newDate) => handleChange("fechaEstado", newDate)}
+          />
+        </Grid>
+        <Grid size={4} />
 
-            {/* Localizacion */}
-            <Grid size={4}>
-              <FormControl sx={{ width: 250 }}>
-                <InputLabel id="cambiar-localizacion-label">Cambiar localización</InputLabel>
-                <Select
-                  labelId="cambiar-localizacion-label"
-                  label="Cambiar localización"
-                  value={tempAnimal.localizacion}
-                  onChange={e => handleChange('localizacion', e.target.value)}
-                >
-                  {(isGato ? localizacionesGato : localizacionesPerro).map(opt => (
-                    <MenuItem key={opt.id ?? '-'} value={opt.id}>{opt.nombre}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid size={4}>
-              <DatePicker
-                label="Fecha de localización"
-                value={tempAnimal.fechaLocalizacion ? new Date(tempAnimal.fechaLocalizacion) : null}
-                onChange={handleFechaLocalizacionChange}
-                sx={{ width: 250 }}
-              />
-            </Grid>
-            <Grid size={4} />
+        {/* Localizacion */}
+        <Grid size={4}>
+          <FormControl sx={{ width: 250 }}>
+            <InputLabel id="cambiar-localizacion-label">Cambiar localización</InputLabel>
+            <Select
+              labelId="cambiar-localizacion-label"
+              label="Cambiar localización"
+              value={
+                (isGato ? localizacionesGato : localizacionesPerro)
+                  .some(opt => opt.id === tempAnimal.localizacion)
+                    ? tempAnimal.localizacion
+                    : ''
+              }
+              onChange={e => handleChange('localizacion', e.target.value)}
+            >
+              {(isGato ? localizacionesGato : localizacionesPerro).map(opt => (
+                <MenuItem key={opt.id ?? '-'} value={opt.id}>{opt.nombre}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid size={4}>
+          <AnimalDatePicker
+            label="Fecha de localización"
+            value={tempAnimal.fechaLocalizacion}
+            onChange={(newDate) => handleChange("fechaLocalizacion", newDate)}
+          />
+        </Grid>
+        <Grid size={4} />
 
-            <Grid size={12}>
-              <ListadoChips
-                title="Enfermedades crónicas"
-                values={enfermedades}
-                handleAddNewValue={handleAddEnfermedad}
-                handleDeleteValue={handleDeleteEnfermedad}
-              />
-            </Grid>
+        <Grid size={12}>
+          <ListadoChips
+            title="Enfermedades crónicas"
+            values={enfermedades}
+            handleAddNewValue={handleAddEnfermedad}
+            handleDeleteValue={handleDeleteEnfermedad}
+          />
+        </Grid>
 
-            <Grid size={12}>
-              <TextField
-                label="Antecedentes"
-                multiline
-                fullWidth
-                rows={2}
-                value={tempAnimal.antecedentes}
-                onChange={e => handleChange('antecedentes', e.target.value)}
-              />
-            </Grid>
-            
-          </Grid>
-        </Box>
-    </LocalizationProvider>
+        <Grid size={12}>
+          <TextField
+            label="Antecedentes"
+            multiline
+            fullWidth
+            rows={2}
+            value={tempAnimal.antecedentes}
+            onChange={e => handleChange('antecedentes', e.target.value)}
+          />
+        </Grid>
+        
+      </Grid>
+    </Box>
   );
 
   return (

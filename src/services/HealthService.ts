@@ -9,3 +9,11 @@ export const fetchHealth = async (): Promise<Health> => {
   }
   return response.json();
 };
+
+export const fetchInfo = async (): Promise<Health> => {
+  const response = await fetch(`${API_URL}/actuator/info`);
+  if (!response.ok) {
+    return { status: 'DOWN' };
+  }
+  return response.json();
+};
