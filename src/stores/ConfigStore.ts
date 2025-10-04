@@ -1,12 +1,11 @@
 import { create } from 'zustand';
 import { Config } from '../models/Config';
-import { Localizacion } from '../models/Localizacion';
 import { fetchAppConfig } from '../services/ConfigService';
 
 interface ConfigState {
   config: Config | null;
-  localizacionesGato: Localizacion[];
-  localizacionesPerro: Localizacion[];
+  localizacionesGato: {label: string; value: number}[];
+  localizacionesPerro: {label: string; value: number}[];
   fetchConfig: () => Promise<void>;
 }
 
@@ -18,8 +17,8 @@ const useConfigStore = create<ConfigState>((set) => ({
     const cfg = await fetchAppConfig();
     set({ 
       config: cfg,
-      localizacionesGato: cfg.localizaciones.filter(l => l.tipo === 'GATO'),
-      localizacionesPerro: cfg.localizaciones.filter(l => l.tipo === 'PERRO'),
+      localizacionesGato: cfg.localizaciones.filter(l => l.tipo === 'GATO').map(loc => ({ label: loc.nombre, value: loc.id })),
+      localizacionesPerro: cfg.localizaciones.filter(l => l.tipo === 'PERRO').map(loc => ({ label: loc.nombre, value: loc.id })),
     });
   },
 }));

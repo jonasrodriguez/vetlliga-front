@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Typography, Box, TextField, Grid, Select, MenuItem, InputLabel, FormControl, IconButton, Button } from '@mui/material';
+import { Modal, Typography, Box, TextField, Grid, IconButton, Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 import { AnimalDto, initialAnimal } from '../../models/AnimalDto';
 import { sexoOptions, estadoOptions } from '../../constants/animalOptions';
 import ListadoChips from '../shared/ListadoChips';
 import AnimalDatePicker from '../shared/AnimalDatePicker';
+import AnimalComboBox from '../shared/AnimalComboBox';
 
 import useAnimalStore from '../../stores/AnimalStore';
 import useConfigStore from '../../stores/ConfigStore';
@@ -114,19 +115,12 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, type, onClose, 
           />
         </Grid>
         <Grid size={4}>
-          <FormControl sx={{ width: 250 }} >
-            <InputLabel id="sexo-label">Sexo</InputLabel>
-            <Select
-              labelId="sexo-label"
-              label="Sexo"
-              value={tempAnimal.sexo}
-              onChange={e => handleChange('sexo', e.target.value)}
-            >
-              {sexoOptions.map(opt => (
-                <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <AnimalComboBox 
+            label="Sexo"
+            value={tempAnimal.sexo}
+            options={sexoOptions}
+            onChange={value => handleChange('sexo', value)}
+          />
         </Grid>
 
         {/* Raza - Color - Origen */}
@@ -148,55 +142,43 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, type, onClose, 
 
         {/* Estado */}
         <Grid size={4}>
-          <FormControl sx={{ width: 250 }}>
-            <InputLabel id="cambiar-estado-label">Cambiar estado</InputLabel>
-            <Select
-              labelId="cambiar-estado-label"
-              label="Cambiar estado"
-              value={tempAnimal.estado}
-              onChange={e => handleChange('estado', e.target.value)}
-            >
-              {estadoOptions.map(opt => (
-                <MenuItem key={opt.value ?? '-'} value={opt.value}>{opt.label}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <AnimalComboBox 
+            label="Estado"
+            value={tempAnimal.estado}
+            options={estadoOptions}
+            onChange={value => handleChange('estado', value)}
+            color="blue"
+          />
         </Grid>
         <Grid size={4}>
           <AnimalDatePicker
             label="Fecha de estado"
             value={tempAnimal.fechaEstado}
             onChange={(newDate) => handleChange("fechaEstado", newDate)}
+            color="blue"
           />
         </Grid>
         <Grid size={4} />
 
         {/* Localizacion */}
         <Grid size={4}>
-          <FormControl sx={{ width: 250 }}>
-            <InputLabel id="cambiar-localizacion-label">Cambiar localización</InputLabel>
-            <Select
-              labelId="cambiar-localizacion-label"
-              label="Cambiar localización"
-              value={
-                (isGato ? localizacionesGato : localizacionesPerro)
-                  .some(opt => opt.id === tempAnimal.localizacion)
+          <AnimalComboBox 
+            label="Localización"
+            value={(isGato ? localizacionesGato : localizacionesPerro)
+                  .some(opt => opt.value === tempAnimal.localizacion)
                     ? tempAnimal.localizacion
-                    : ''
-              }
-              onChange={e => handleChange('localizacion', e.target.value)}
-            >
-              {(isGato ? localizacionesGato : localizacionesPerro).map(opt => (
-                <MenuItem key={opt.id ?? '-'} value={opt.id}>{opt.nombre}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+                    : ''}
+            options={isGato ? localizacionesGato : localizacionesPerro}
+            onChange={value => handleChange('localizacion', value)}
+            color="blue"
+          />          
         </Grid>
         <Grid size={4}>
           <AnimalDatePicker
             label="Fecha de localización"
             value={tempAnimal.fechaLocalizacion}
             onChange={(newDate) => handleChange("fechaLocalizacion", newDate)}
+            color="green"
           />
         </Grid>
         <Grid size={4} />

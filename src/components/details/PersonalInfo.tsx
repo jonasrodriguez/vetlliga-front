@@ -24,8 +24,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
   const isAdmin = useAuthStore((state) => state.isAdmin());
 
   const { localizacionesGato, localizacionesPerro } = useConfigStore();
-  const opttionsGato = localizacionesGato.map(loc => ({ label: loc.nombre, value: loc.id }));
-  const optionsPerro = localizacionesPerro.map(loc => ({ label: loc.nombre, value: loc.id }));
 
   const enfermedades = tempAnimal.enfermedades != null ? tempAnimal.enfermedades.split(';') : [];
 
@@ -147,7 +145,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ animal }) => {
             <AnimalComboBox 
               label="Localización" 
               value={tempAnimal.localizacion} 
-              options={isGato ? opttionsGato : optionsPerro}
+              options={isGato ? localizacionesGato : localizacionesPerro}
               onChange={value => handleChange('localizacion', value)}
               color="green"
             />            

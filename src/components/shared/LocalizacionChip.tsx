@@ -14,8 +14,8 @@ const LocalizacionChip: React.FC<LocalizacionChipProps> = ({ localizacion }) => 
 
   const colorValues = Object.values(ColorCodes);
   const loc = config?.localizaciones.find(l => l.id === localizacion);
-  const locIndex = loc?.tipo === 'GATO' ? localizacionesGato.findIndex((l) => l.id === localizacion) 
-    : localizacionesPerro.findIndex((l) => l.id === localizacion);
+  const locIndex = loc?.tipo === 'GATO' ? localizacionesGato.findIndex((l) => l.value === localizacion) 
+    : localizacionesPerro.findIndex((l) => l.value === localizacion);
     
   const color = colorValues[locIndex % colorValues.length];
 
