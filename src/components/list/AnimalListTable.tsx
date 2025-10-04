@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, TableBody, TableContainer, Paper, TableRow, TableCell, IconButton, Tooltip  } from '@mui/material';
+import { Table, TableBody, TableContainer, Paper, TableRow, TableCell, IconButton, Tooltip, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 
@@ -15,9 +15,10 @@ import formatDate from '../../utils/formatDate';
 
 interface AnimalListTableProps {
   animals: AnimalDto[];
+  loading?: boolean;
 }
 
-const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals }) => {
+const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals, loading }) => {
 
   const navigate = useNavigate();
 
@@ -36,47 +37,61 @@ const AnimalListTable: React.FC<AnimalListTableProps> = ({ animals }) => {
     return [];
   }
 
+  const tableBody = (
+    <TableBody>
+      {animals.map((animal, key) => (
+        <TableRow key={animal.id} onClick={() => handleRowClick(animal.id)}
+          sx={{
+            cursor: 'pointer',
+            backgroundColor: key % 2 === 0 ? 'rgba(0, 0, 0, 0.05)' : 'inherit', // Alternating row colors
+            '&:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.15)', // Slightly darker background on hover
+            },
+          }}
+        >
+          <TableCell>{animal.nombre}</TableCell>
+          <TableCell>
+            <EstadoChip estado={animal.estado} />
+          </TableCell>
+          <TableCell>
+            <LocalizacionChip localizacion={animal.localizacion} />
+          </TableCell>                   
+          <TableCell>{animal.numeroRegistro}</TableCell>
+          <TableCell>{sexoLiterales(animal.sexo)}</TableCell>
+          <TableCell>{animal.chip}</TableCell>
+          <TableCell>{calculoEdad(animal.fechaNacimiento)}</TableCell>         
+          <TableCell>{animal.ultimoPeso ? `${animal.ultimoPeso} kg` : '-'}</TableCell>
+          <TableCell>{formatDate(animal.fechaEntrada)}</TableCell>
+          <TableCell>{listadoEnfermedades(animal).join(', ')}</TableCell>
+
+          {/* Boton historial */}
+          <TableCell  onClick={(e) => e.stopPropagation()} >
+            <Tooltip title="Mostrar historial">
+              <IconButton onClick={() => handleHistorialClick(animal.id)} size="small">
+                <SummarizeIcon color="primary" />
+              </IconButton>
+            </Tooltip>
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  );
+
   return (
     <TableContainer component={Paper} elevation={5}>
       <Table>
         <AnimalTableHeaders/>
-        <TableBody>
-          {animals.map((animal, key) => (
-            <TableRow key={animal.id} onClick={() => handleRowClick(animal.id)}
-              sx={{
-                cursor: 'pointer',
-                backgroundColor: key % 2 === 0 ? 'rgba(0, 0, 0, 0.05)' : 'inherit', // Alternating row colors
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.15)', // Slightly darker background on hover
-                },
-              }}
-            >
-              <TableCell>{animal.nombre}</TableCell>
-              <TableCell>
-                <EstadoChip estado={animal.estado} />
-              </TableCell>
-              <TableCell>
-                <LocalizacionChip localizacion={animal.localizacion} />
-              </TableCell>                   
-              <TableCell>{animal.numeroRegistro}</TableCell>
-              <TableCell>{sexoLiterales(animal.sexo)}</TableCell>
-              <TableCell>{animal.chip}</TableCell>
-              <TableCell>{calculoEdad(animal.fechaNacimiento)}</TableCell>         
-              <TableCell>{animal.ultimoPeso ? `${animal.ultimoPeso} kg` : '-'}</TableCell>
-              <TableCell>{formatDate(animal.fechaEntrada)}</TableCell>
-              <TableCell>{listadoEnfermedades(animal).join(', ')}</TableCell>
-
-              {/* Boton historial */}
-              <TableCell  onClick={(e) => e.stopPropagation()} >
-                <Tooltip title="Mostrar historial">
-                  <IconButton onClick={() => handleHistorialClick(animal.id)} size="small">
-                    <SummarizeIcon color="primary" />
-                  </IconButton>
-                </Tooltip>
+        {loading ? (
+          <TableBody>
+            <TableRow>
+              <TableCell colSpan={12} align="center">
+                <CircularProgress />
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
+          </TableBody>
+        ) : (
+          tableBody
+        )}
       </Table>
     </TableContainer>
   );

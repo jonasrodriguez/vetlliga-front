@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { AnimalType } from '../enums/AnimalType';
 import { getEstadoAnimalFromRoute } from '../enums/EstadoAnimal';
 
@@ -70,10 +70,6 @@ const AnimalListPage: React.FC<ListPageProps> = ({ type }) => {
     setFilter('page', newPage);
   };
 
-  if (loading) {
-    return <CircularProgress />;
-  }
-
   return (
     <Box sx={{ width: '100%', padding: 2 }}>
       <Typography variant="h6" gutterBottom>
@@ -81,8 +77,8 @@ const AnimalListPage: React.FC<ListPageProps> = ({ type }) => {
       </Typography>
       <AnimalListControles type={type} onAddClick={handleAddClick} onExcelClick={handleExcelClick} />
       <FiltrosDescripcion />
-      <AnimalListTable animals={animalList} />
-      {page && <AnimalListPagination type={type} animalList={animalList} page={page} onPageChange={onPageChange} />}
+      <AnimalListTable animals={animalList} loading={loading} />
+      {loading && page && <AnimalListPagination type={type} animalList={animalList} page={page} onPageChange={onPageChange} />}
       <AltaAnimalModal
         open={modalOpen}
         type={type}
