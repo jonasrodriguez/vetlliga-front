@@ -10,6 +10,7 @@ import AnimalComboBox from '../shared/AnimalComboBox';
 
 import useAnimalStore from '../../stores/AnimalStore';
 import useConfigStore from '../../stores/ConfigStore';
+import useNotificationStore from '../../stores/NotificationStore';
 
 interface AltaAnimalModalProps {
   open: boolean;
@@ -20,7 +21,6 @@ interface AltaAnimalModalProps {
 
 const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, type, onClose, onAlta }) => {
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [tempAnimal, setTempAnimal] = useState<AnimalDto>(initialAnimal);
   const { addAnimal } = useAnimalStore();
 
@@ -48,12 +48,16 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, type, onClose, 
   const handleSave = async () => {
     setSaving(true);
     if (!tempAnimal.sexo || !tempAnimal.estado || !tempAnimal.localizacion) {
-      setError("Por favor, seleccione el sexo, estado y localizacion para realizar un alta correctamente.");
+      setSaving(false);
+      useNotificationStore.getState().show("Por favor, seleccione el sexo, estado y localizacion para realizar un alta correctamente.", "error", "bottom");
       return;
     }
     await addAnimal(tempAnimal)
       .then((response) => onAlta(response.id))
-      .catch(() => setError("No se pudo guardar el animal. Intenta nuevamente."))
+      .catch(() => {
+        useNotificationStore.getState().show("No se pudo guardar el animal. Intenta nuevamente.", "error", "bottom");
+        setSaving(false);
+      })
       .finally(() => setSaving(false));
   };
 
@@ -170,7 +174,7 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, type, onClose, 
                     : ''}
             options={isGato ? localizacionesGato : localizacionesPerro}
             onChange={value => handleChange('localizacion', value)}
-            color="blue"
+            color="green"
           />          
         </Grid>
         <Grid size={4}>
@@ -229,11 +233,6 @@ const AltaAnimalModal: React.FC<AltaAnimalModalProps> = ({ open, type, onClose, 
           </IconButton>
         </Box>
         {content}
-        {error && (
-          <Typography color="error" sx={{ mt: 2 }}>
-            {error}
-          </Typography>
-        )}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, gap: 1 }}>
           <Button variant="contained" color="primary" onClick={handleSave}>
             {saving ? "Guardando..." : `Alta ${isGato ? "Gato" : "Perro"}`}

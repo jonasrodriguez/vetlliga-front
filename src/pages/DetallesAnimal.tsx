@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 
+import { Box, CircularProgress } from '@mui/material';
+
 import useAnimalStore from '../stores/AnimalStore';
 import DetalleLayout from '../layouts/DetalleLayout';
 
@@ -23,7 +25,7 @@ const DetallesAnimal = () => {
   };
 
   if (!animal) {
-    return <p>Loading...</p>;
+    return <Box><CircularProgress /></Box>;
   }
 
   return <DetalleLayout key={id} animal={animal} tabIndex={tabIndex} onTabChange={handleTabChange} onHistorialClose={() => setHistorial(false)} />;
