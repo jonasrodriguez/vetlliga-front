@@ -44,6 +44,21 @@ const Documentos: React.FC<DocumentosProps> = ({ animal }) => {
     await DocumentoService.getDocumento(animal.id, id);
   }
 
+  const trimNombre = (nombre: string) => {
+    const maxLength = 30;
+    if (nombre.length <= maxLength) {
+      return nombre;
+    }
+
+    const split = nombre.split('.');
+    if (split.length > 1) {
+      const extension = split.pop();
+      return nombre.slice(0, maxLength) + '...' + extension;
+    }
+
+    return nombre.slice(0, maxLength) + '...';
+  }; 
+
   return (
     <Paper elevation={3} sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 2, position: 'relative' }}>
 
@@ -86,7 +101,7 @@ const Documentos: React.FC<DocumentosProps> = ({ animal }) => {
               }}
               onClick={() => entry.id ? downloadDocumento(entry.id) : null}
             >
-              {entry.nombre}
+              {trimNombre(entry.nombre)}
             </Typography>
           </Grid>
           <Grid size={4}>
