@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, CircularProgress, TextField } from '@mui/material';
 import ResusableDetailsModal from '../../shared/ResusableDetailsModal';
 
+import useNotificationStore from '../../../stores/NotificationStore';
+
 interface DocumentosModalProps {
   open: boolean;
   onClose: () => void;
@@ -35,6 +37,7 @@ const DocumentosModal: React.FC<DocumentosModalProps> = ({ open, onClose, onUplo
       handleClose();
     } catch (error) {
       console.error('Upload failed:', error);
+      useNotificationStore.getState().show('Error subiendo el fichero. Compruebe que no este duplicado y que no exceda el limite de 50 MB', 'error', 'bottom');
     } finally {
       setLoading(false);
     }
