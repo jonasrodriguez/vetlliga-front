@@ -1,5 +1,30 @@
 # React + TypeScript + Vite
 
+## Deployment
+
+```
+docker build -t vetlliga-frontend:latest .
+docker tag vetlliga-frontend:latest jonasrodriguez/vetlliga-frontend:latest
+docker push jonasrodriguez/vetlliga-frontend:latest
+```
+
+Multiple tags
+
+```
+docker build -t jonasrodriguez/vetlliga-frontend:1.5.2 -t jonasrodriguez/vetlliga-frontend:latest .
+docker push jonasrodriguez/vetlliga-frontend:1.5.2
+docker push jonasrodriguez/vetlliga-frontend:latest
+```
+
+Build for ARM64
+
+```
+docker build --platform=linux/arm64 -t jonasrodriguez/vetlliga-frontend:1.5.2 -t jonasrodriguez/vetlliga-frontend:latest --push --no-cache .
+```
+
+
+## Summary
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

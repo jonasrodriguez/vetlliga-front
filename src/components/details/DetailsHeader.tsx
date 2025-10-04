@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Paper, Box, Avatar, Typography, Button } from '@mui/material';
+import { Paper, Box, Typography, Button } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useNavigate } from 'react-router-dom';
 
 import DeleteConfirmation from '../shared/DeleteConfirmation';
+import LazyAvatar from '../shared/LazyAvatar';
 
 import { AnimalDto } from '../../models/AnimalDto';
 import EstadoChip from '../shared/EstadoChip';
@@ -44,7 +45,7 @@ const DetailsHeader: React.FC<PersonalInfoProps> = ({ animal }) => {
 
   return (
     <Paper elevation={3} sx={{ p: 4, display: 'flex', gap: 3 }}>
-      <Avatar src={imagePath} sx={{ width: 150, height: 150 }} />
+      <LazyAvatar src={imagePath} onClick={() => navigate(-1)} />
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'end', flexGrow: 1, gap: 1 }}>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
