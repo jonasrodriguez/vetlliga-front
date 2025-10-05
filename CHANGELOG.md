@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.6.0] - 2025-10-05
+### Changed
+- Removed /api for all backend calls
+
+---
+
 ## [1.5.2] - 2025-10-04
 ### Changed
 - Show frontend version on tooltip
