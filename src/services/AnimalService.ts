@@ -2,10 +2,8 @@ import { AnimalDto, AnimalPages } from '../models/AnimalDto';
 import { AnimalCriteria } from '../models/AnimalCriteria';
 import { authFetch } from '../utils/fetch';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL + '/api';
-
 export const fetchAnimal = async (id: number): Promise<AnimalDto> => {
-  const response = await authFetch(`${API_BASE_URL}/animales/${id}`);
+  const response = await authFetch(`/api/animales/${id}`);
   if (!response.ok) {
     throw new Error('Failed to fetch animal');
   }
@@ -23,7 +21,7 @@ export const fetchAllAnimals = async (criteria: Partial<AnimalCriteria> = {}): P
     }, {} as Record<string, string>)
   ).toString();
 
-  const response = await authFetch(`${API_BASE_URL}/animales${queryParams ? `?${queryParams}` : ''}`, 
+  const response = await authFetch(`/api/animales${queryParams ? `?${queryParams}` : ''}`, 
     { method: 'GET',}
   );
 
@@ -35,7 +33,7 @@ export const fetchAllAnimals = async (criteria: Partial<AnimalCriteria> = {}): P
 };
 
 export const createAnimal = async (newAnimal: Omit<AnimalDto, 'id'>): Promise<AnimalDto> => {
-  const response = await authFetch(`${API_BASE_URL}/animales`, {
+  const response = await authFetch(`/api/animales`, {
     method: 'POST',
     body: JSON.stringify(newAnimal),
   });
@@ -46,7 +44,7 @@ export const createAnimal = async (newAnimal: Omit<AnimalDto, 'id'>): Promise<An
 };
 
 export const updateAnimal = async (id: number, updates: Partial<AnimalDto>): Promise<AnimalDto> => {
-  const response = await authFetch(`${API_BASE_URL}/animales/${id}`, {
+  const response = await authFetch(`/api/animales/${id}`, {
     method: 'PUT',
     body: JSON.stringify(updates),
   });
@@ -57,7 +55,7 @@ export const updateAnimal = async (id: number, updates: Partial<AnimalDto>): Pro
 };
 
 export const disableAnimal = async (id: number): Promise<void> => {
-  const response = await authFetch(`${API_BASE_URL}/animales/${id}/active?active=false`, {
+  const response = await authFetch(`/api/animales/${id}/active?active=false`, {
     method: 'PATCH',
   });
   if (!response.ok) {

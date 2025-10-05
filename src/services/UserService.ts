@@ -1,10 +1,8 @@
 import { Usuario } from '../models/Usuario';
 import { authFetch } from '../utils/fetch';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL + '/api';
-
 export const login = async (username: string, password: string): Promise<string> => {
-  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+  const response = await fetch('/api/auth/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -21,7 +19,7 @@ export const login = async (username: string, password: string): Promise<string>
 };
 
 export const fetchUsers = async (): Promise<Usuario[]> => {
-  const response = await authFetch(`${API_BASE_URL}/usuarios`);
+  const response = await authFetch('/api/usuarios');
   if (!response.ok) {
     return Promise.reject('Failed to fetch users');
   }
@@ -33,7 +31,7 @@ export const fetchUsers = async (): Promise<Usuario[]> => {
 export const createUser = async (user: Partial<Usuario>): Promise<Usuario> => {
   user.id = undefined;
   user.username = user.username?.toLowerCase() || '';
-  const response = await authFetch(`${API_BASE_URL}/usuarios`, {
+  const response = await authFetch('/api/usuarios', {
     method: 'POST',
     body: JSON.stringify(user),
   });
@@ -45,7 +43,7 @@ export const createUser = async (user: Partial<Usuario>): Promise<Usuario> => {
 };
 
 export const updateUserPassword = async (userId: number, newPassword: string): Promise<void> => {
-  const response = await authFetch(`${API_BASE_URL}/usuarios/${userId}/password`, {
+  const response = await authFetch(`/api/usuarios/${userId}/password`, {
     method: 'PUT',
     body: JSON.stringify({ password: newPassword }),
   });
@@ -57,7 +55,7 @@ export const updateUserPassword = async (userId: number, newPassword: string): P
 };
 
 export const deleteUser = async (userId: number): Promise<void> => {
-  const response = await authFetch(`${API_BASE_URL}/usuarios/${userId}`, {
+  const response = await authFetch(`/api/usuarios/${userId}`, {
     method: 'DELETE',
   });
   if (!response.ok) {

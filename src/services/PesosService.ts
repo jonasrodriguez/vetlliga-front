@@ -1,10 +1,8 @@
 import { PesoDto } from '../models/AnimalDto';
 import { authFetch } from '../utils/fetch';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
-
 export const addPeso = async (animalId: number, peso: PesoDto) => {
-  const response = await authFetch(`${API_URL}/animales/${animalId}/peso`, {
+  const response = await authFetch(`/api/animales/${animalId}/peso`, {
     method: 'POST',
     body: JSON.stringify(peso),
   });
@@ -13,7 +11,7 @@ export const addPeso = async (animalId: number, peso: PesoDto) => {
 };
 
 export const updatePeso = async (animalId: number, peso: PesoDto) => {
-  const response = await authFetch(`${API_URL}/animales/${animalId}/peso/${peso.id}`, {
+  const response = await authFetch(`/api/animales/${animalId}/peso/${peso.id}`, {
     method: 'PUT',
     body: JSON.stringify(peso),
   });
@@ -22,7 +20,7 @@ export const updatePeso = async (animalId: number, peso: PesoDto) => {
 };
 
 export const deletePeso = async (animalId: number, pesoId: number) => {
-  const response = await authFetch(`${API_URL}/animales/${animalId}/peso/${pesoId}`, {
+  const response = await authFetch(`/api/animales/${animalId}/peso/${pesoId}`, {
     method: 'DELETE',
   });
   if (!response.ok) throw new Error('Error eliminando peso');

@@ -2,10 +2,8 @@ import { Config } from '../models/Config';
 import { Localizacion } from '../models/Localizacion';
 import { authFetch } from '../utils/fetch';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL;
-
 export const fetchAppConfig = async (): Promise<Config> => {
-  const response = await authFetch(`${API_URL}/api/config`);
+  const response = await authFetch('/api/config');
   if (!response.ok) {
     return { localizaciones: [] };
   }
@@ -13,7 +11,7 @@ export const fetchAppConfig = async (): Promise<Config> => {
 };
 
 export const addLocalizacion = async (nombre: string, tipo: 'GATO' | 'PERRO'): Promise<Localizacion> => {
-  const response = await authFetch(`${API_URL}/api/localizaciones`, {
+  const response = await authFetch('/api/localizaciones', {
     method: 'POST',
     body: JSON.stringify({ nombre, tipo }),
     headers: {
@@ -27,7 +25,7 @@ export const addLocalizacion = async (nombre: string, tipo: 'GATO' | 'PERRO'): P
 };
 
 export const deleteLocalizacion = async (id: number): Promise<void> => {
-  const response = await authFetch(`${API_URL}/api/localizaciones/${id}`, {
+  const response = await authFetch(`/api/localizaciones/${id}`, {
     method: 'DELETE',
   });
   if (!response.ok) {

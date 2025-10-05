@@ -1,10 +1,8 @@
 import { DesparasitacionDto } from '../models/AnimalDto';
 import { authFetch } from '../utils/fetch';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
-
 export const addDesparasitacion = async (animalId: number, desparasitacion: DesparasitacionDto) => {
-  const response = await authFetch(`${API_URL}/animales/${animalId}/desparasitacion`, {
+  const response = await authFetch(`/api/animales/${animalId}/desparasitacion`, {
     method: 'POST',
     body: JSON.stringify(desparasitacion),
   });
@@ -13,7 +11,7 @@ export const addDesparasitacion = async (animalId: number, desparasitacion: Desp
 };
 
 export const updateDesparasitacion = async (animalId: number, desparasitacion: DesparasitacionDto) => {
-  const response = await authFetch(`${API_URL}/animales/${animalId}/desparasitacion/${desparasitacion.id}`, {
+  const response = await authFetch(`/api/animales/${animalId}/desparasitacion/${desparasitacion.id}`, {
     method: 'PUT',
     body: JSON.stringify(desparasitacion),
   });
@@ -22,7 +20,7 @@ export const updateDesparasitacion = async (animalId: number, desparasitacion: D
 };
 
 export const deleteDesparasitacion = async (animalId: number, desparasitacionId: number) => {
-  const response = await authFetch(`${API_URL}/animales/${animalId}/desparasitacion/${desparasitacionId}`, {
+  const response = await authFetch(`/api/animales/${animalId}/desparasitacion/${desparasitacionId}`, {
     method: 'DELETE',
   });
   if (!response.ok) throw new Error('Error eliminando desparasitación');

@@ -1,10 +1,8 @@
 import { IntervencionDto } from '../models/AnimalDto';
 import { authFetch } from '../utils/fetch';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
-
 export const addIntervencion = async (animalId: number, intervencion: IntervencionDto) => {
-  const response = await authFetch(`${API_URL}/animales/${animalId}/intervencion`, {
+  const response = await authFetch(`/api/animales/${animalId}/intervencion`, {
     method: 'POST',
     body: JSON.stringify(intervencion),
   });
@@ -13,7 +11,7 @@ export const addIntervencion = async (animalId: number, intervencion: Intervenci
 };
 
 export const updateIntervencion = async (animalId: number, intervencion: IntervencionDto) => {
-  const response = await authFetch(`${API_URL}/animales/${animalId}/intervencion/${intervencion.id}`, {
+  const response = await authFetch(`/api/animales/${animalId}/intervencion/${intervencion.id}`, {
     method: 'PUT',
     body: JSON.stringify(intervencion),
   });
@@ -22,7 +20,7 @@ export const updateIntervencion = async (animalId: number, intervencion: Interve
 };
 
 export const deleteIntervencion = async (animalId: number, intervencionId: number) => {
-  const response = await authFetch(`${API_URL}/animales/${animalId}/intervencion/${intervencionId}`, {
+  const response = await authFetch(`/api/animales/${animalId}/intervencion/${intervencionId}`, {
     method: 'DELETE',
   });
   if (!response.ok) throw new Error('Error eliminando intervención');
