@@ -78,7 +78,7 @@ const AnimalListPage: React.FC<ListPageProps> = ({ type }) => {
       <AnimalListControles type={type} onAddClick={handleAddClick} onExcelClick={handleExcelClick} />
       <FiltrosDescripcion />
       <AnimalListTable animals={animalList} loading={loading} />
-      {loading && page && <AnimalListPagination type={type} animalList={animalList} page={page} onPageChange={onPageChange} />}
+      {page && <AnimalListPagination type={type} animalList={animalList} page={page} onPageChange={onPageChange} />}
       <AltaAnimalModal
         open={modalOpen}
         type={type}
