@@ -26,7 +26,7 @@ const AnimalComboBox: React.FC<AnimalComboBox> = ({ label, value, onChange, opti
       <Select 
         labelId={`${label}-label`} 
         label={label} 
-        defaultValue={value} 
+        value={value} 
         onChange={e => onChange(e.target.value)}
         sx={styleProps}
         >
