@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.0] - 2026-07-03
+### Changed
+- Removed animal filters (from to) from vacunas, test & desparasitasiones
+
+---
+
 ## [1.6.1] - 2025-10-31
 ### Fixed
 - Datepickers will allow manual input without resetting

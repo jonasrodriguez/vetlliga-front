@@ -40,33 +40,33 @@ const FiltrosDescripcion: React.FC = () => {
         value: `Fecha localización: ${formatMonthDate(filters.fechaLocalizacion)}`
       });
     }
-    if (filters.vacunaDesde || filters.vacunaHasta) {
+    if (filters.vacuna) {
       newFilterList.push({
-        label: 'vacunaDesde;vacunaHasta',
+        label: 'vacuna',
         value: 'Ultima vacunación'
       });
     }
-    if (filters.desparasitoInternaDesde || filters.desparasitoInternaHasta) {
+    if (filters.desparasitoInterna) {
       newFilterList.push({
-        label: 'desparasitoInternaDesde;desparasitoInternaHasta',
+        label: 'desparasitoInterna',
         value: 'Ultima desparasitación interna'
       });
     }
-    if (filters.desparasitoExternaDesde || filters.desparasitoExternaHasta) {
+    if (filters.desparasitoExterna) {
       newFilterList.push({
-        label: 'desparasitoExternaDesde;desparasitoExternaHasta',
+        label: 'desparasitoExterna',
         value: 'Ultima desparasitación externa'
       });
     }
-    if (filters.testDesde || filters.testHasta) {
+    if (filters.test) {
       newFilterList.push({
-        label: 'testDesde',
+        label: 'test',
         value: 'Ultimo test'
       });
     }
 
     setFilterList(newFilterList);
-  }, [filters, isGatos]);
+  }, [filters, isGatos, config]);
 
   const handleDelete = (filter: { label: string; value: string }) => {
     setFilterList((prev) => prev.filter(f => f.label !== filter.label));

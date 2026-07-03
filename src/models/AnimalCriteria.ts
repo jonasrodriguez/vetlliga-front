@@ -5,14 +5,10 @@ export interface AnimalCriteria {
   fechaLocalizacion?: string;
   fechaEstado?: string;
 
-  vacunaDesde?: string;
-  vacunaHasta?: string;
-  desparasitoInternaDesde?: string;
-  desparasitoInternaHasta?: string;
-  desparasitoExternaDesde?: string;
-  desparasitoExternaHasta?: string;
-  testDesde?: string;
-  testHasta?: string;
+  vacuna?: string;
+  desparasitoInterna?: string;
+  desparasitoExterna?: string;
+  test?: string;
 
   search?: string;
 

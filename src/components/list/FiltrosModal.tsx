@@ -25,6 +25,7 @@ const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen,
 
   const applyFilters = () => {
     setFilters(tempFilter);
+    onClose();
   }
 
   useEffect(() => {
@@ -104,21 +105,16 @@ const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen,
 
   const vacunacionFiltro = (
     <>
-      <Typography variant="subtitle1" fontWeight="bold">
-        Última vacunación</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+        <Typography variant="subtitle1" fontWeight="bold">
+          Última vacunación
+        </Typography>
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
           <DatePicker
-            label="Desde"
+            label="vacunación"
             sx={{ width: 250 }}
-            value={tempFilter.vacunaDesde ? new Date(tempFilter.vacunaDesde) : null}
-            onChange={handleDateChange('vacunaDesde')}
-          />
-          <DatePicker
-            label="Hasta"
-            sx={{ width: 250 }}
-            value={tempFilter.vacunaHasta ? new Date(tempFilter.vacunaHasta) : null}
-            onChange={handleDateChange('vacunaHasta')}
+            value={tempFilter.vacuna ? new Date(tempFilter.vacuna) : null}
+            onChange={handleDateChange('vacuna')}
           />
         </LocalizationProvider>
       </Box>    
@@ -127,22 +123,16 @@ const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen,
 
   const desparasitacionInternaFiltro = (
     <>
-      <Typography variant="subtitle1" fontWeight="bold">
-        Última desparasitación interna
-      </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+        <Typography variant="subtitle1" fontWeight="bold">
+          Última desparasitación interna
+        </Typography>        
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
           <DatePicker
-            label="Desde"
+            label="Interna"
             sx={{ width: 250 }}
-            value={tempFilter.desparasitoInternaDesde ? new Date(tempFilter.desparasitoInternaDesde) : null}
-            onChange={handleDateChange('desparasitoInternaDesde')}
-          />
-          <DatePicker
-            label="Hasta"
-            sx={{ width: 250 }}
-            value={tempFilter.desparasitoInternaHasta ? new Date(tempFilter.desparasitoInternaHasta) : null}
-            onChange={handleDateChange('desparasitoInternaHasta')}
+            value={tempFilter.desparasitoInterna ? new Date(tempFilter.desparasitoInterna) : null}
+            onChange={handleDateChange('desparasitoInterna')}
           />
         </LocalizationProvider>
       </Box>    
@@ -151,22 +141,16 @@ const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen,
 
   const desparasitacionExternaFiltro = (
     <>
-      <Typography variant="subtitle1" fontWeight="bold">
-        Última desparasitación externa
-      </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+        <Typography variant="subtitle1" fontWeight="bold">
+          Última desparasitación externa
+        </Typography>
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
           <DatePicker
-            label="Desde"
+            label="Externa"
             sx={{ width: 250 }}
-            value={tempFilter.desparasitoExternaDesde ? new Date(tempFilter.desparasitoExternaDesde) : null}
-            onChange={handleDateChange('desparasitoExternaDesde')}
-          />
-          <DatePicker
-            label="Hasta"
-            sx={{ width: 250 }}
-            value={tempFilter.desparasitoExternaHasta ? new Date(tempFilter.desparasitoExternaHasta) : null}
-            onChange={handleDateChange('desparasitoExternaHasta')}
+            value={tempFilter.desparasitoExterna ? new Date(tempFilter.desparasitoExterna) : null}
+            onChange={handleDateChange('desparasitoExterna')}
           />
         </LocalizationProvider>
       </Box>    
@@ -175,22 +159,16 @@ const AnimalListFiltrosModal: React.FC<AnimalListFiltrosModalProps> = ({ isOpen,
 
   const testFiltro = (
     <>
-      <Typography variant="subtitle1" fontWeight="bold">
-        Último test
-      </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+        <Typography variant="subtitle1" fontWeight="bold">
+          Último test
+        </Typography>
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
           <DatePicker
-            label="Desde"
+            label="Test"
             sx={{ width: 250 }}
-            value={tempFilter.testDesde ? new Date(tempFilter.testDesde) : null}
-            onChange={handleDateChange('testDesde')}
-          />
-          <DatePicker
-            label="Hasta"
-            sx={{ width: 250 }}
-            value={tempFilter.testHasta ? new Date(tempFilter.testHasta) : null}
-            onChange={handleDateChange('testHasta')}
+            value={tempFilter.test ? new Date(tempFilter.test) : null}
+            onChange={handleDateChange('test')}
           />
         </LocalizationProvider>
       </Box>
