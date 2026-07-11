@@ -5,7 +5,7 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import Box from '@mui/material/Box';
 
 interface LazyAvatarProps {
-  src: string;
+  src?: string | null;
   size?: number;
   alt?: string;
   onClick?: () => void;
@@ -14,6 +14,8 @@ interface LazyAvatarProps {
 const LazyAvatar: React.FC<LazyAvatarProps> = ({ src, size = 150, alt, onClick }) => {
   const [loaded, setLoaded] = useState(false);
   const [hovered, setHovered] = useState(false);
+
+  if (!src) return <Skeleton variant="circular" width={size} height={size} />;
 
   return (
     <Box
@@ -35,10 +37,10 @@ const LazyAvatar: React.FC<LazyAvatarProps> = ({ src, size = 150, alt, onClick }
         sx={{
           width: size,
           height: size,
-          display: loaded ? 'flex' : 'none',
+          opacity: loaded ? 1 : 0,
+          transition: 'opacity 0.3s ease',
         }}
         imgProps={{
-          loading: 'lazy',
           onLoad: () => setLoaded(true),
         }}
       />
