@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import Cropper, { Area, Point } from "react-easy-crop";
 import { Box, Button, Slider, Typography, CircularProgress } from "@mui/material";
 
-import readFile from "../../../utils/readFile";
+import readFile from "@/utils/readFile";
 
 interface AvatarCropperProps {
   size?: number;
